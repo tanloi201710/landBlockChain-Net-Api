@@ -1,0 +1,186 @@
+
+<% if(messages.error) {%>
+  <div class="d-flex justify-content-center">
+  <div id="flash" style="width: 50%;" class="alert alert-danger d-flex justify-content-between" style="text-align:center;">
+      <%= messages.error %>
+    <button id="delete">X</button>
+    </div>
+  </div>
+<%}%>
+
+<% if(messages.success) {%>
+  <div class="d-flex justify-content-center">
+  <div id="flash" style="width: 50%;" class="alert alert-success d-flex justify-content-between" style="text-align:center;">
+      <%= messages.success %>
+    <button id="delete">X</button>
+    </div>
+  </div>
+<%}%>
+
+
+
+
+<div class="container">
+    <table class="table table-striped mt-6">
+        <thead>
+            <th style="text-align:center;">Mã chuyển</th>
+            <th style="text-align:center;">Mã đất</th>
+            <th style="text-align:center;">NGƯỜI CHUYỂN</th>
+            <th style="text-align:center;">NGƯỜI NHẬN</th>
+            <th style="text-align:center;">THỜI GIAN CHUYỂN</th>
+            <th style="text-align:center;">SỐ TIỀN</th>
+            <th style="text-align:center;">TRẠNG THÁI</th> 
+            <th style="text-align:center;">NHẬN ĐẤT</th>
+
+        </thead>
+        <tbody>
+            <% for(var element of result){ %>
+              <a href="/#">
+                 <tr>
+                    <td style="text-align:center"><%= element.key%></td>
+                    <td style="text-align:center"><%= element.value.Land%></td>
+
+                    <%if(typeof element.value.From == 'object'){
+                      let m="";
+                      let array = [];
+                      for(let el of element.value.From){
+                        m += Object.keys(el)+"/"
+                    }%>
+                      <td style="text-align:center"><%= m.substring(m,m.length-1)%></td>
+                    <%}else{%>
+                      <td style="text-align:center"><%= element.value.From%></td>
+                    <%}%>
+
+                    <%if(typeof element.value.To == 'object'){
+                      let m="";
+                      let array = [];
+                      for(let el of element.value.To){
+                        m += Object.keys(el)+"/"
+                    }%>
+                      <td style="text-align:center"><%= m.substring(m,m.length-1)%></td>
+                    <%}else{%>
+                      <td style="text-align:center"><%= element.value.To%></td>
+                    <%}%>
+
+                    <td style="text-align:center"><%= element.value.TimeStart%></td>
+                    <td style="text-align:center"><%= element.value.Money%></td>
+                 
+                    <%if(typeof element.value.To == 'object'){
+                      let check;
+                      for(let el of element.value.To){
+                        if(Object.keys(el) == user.userId){
+                          check = Object.values(el);
+                        }
+                      }
+                      
+                      if(check == "true"){%>
+                        <td style="text-align:center; color:green;">Đã nhận đất</td>
+                        <td style="text-align:center">
+                          <form action="/processTransfer" method="POST">
+                              <input type="hidden" name="keyTransfer" value=<%= element.key%> >
+                              <input type="hidden" name="confirmed" value=<%= check %> >
+                              <button type="submit" class="bg-green-700 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Tiến độ chuyển đất</button>
+                          </form>
+                          </td>
+                      <%}else{%>
+                        <td style="text-align:center; color:red;">Chưa nhận đất</td>
+
+                        <% 
+                        let array = [];
+                        let countConfirmFromTransfer = 0;
+                        for(let el of element.value.From){
+                          if(Object.values(el) == "false"){
+                            countConfirmFromTransfer++;
+                            array.push(Object.keys(el))
+                          }
+                        }
+                        if(countConfirmFromTransfer == 0){%>
+                          <td style="text-align:center">
+                            <form action="/detailReceive" method="POST">
+                                <input type="hidden" name="key" value=<%= element.value.Land%> >
+                                <input type="hidden" name="keyTransfer" value=<%= element.key%>>
+                                <input type="hidden" name="confirmed" value=<%= false %> >
+                                <button type="submit" class="bg-green-700 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Nhận đất</button>
+                            </form>
+                            </td>
+                          
+                        <%}else{%>
+                            <td style="color: red;">Người chuyển chưa xác nhận <br> {<%= array.join("/")%>} </td>
+                          <%}
+                        %>
+                       
+
+                      <%}%>
+                        
+                    <%}else{
+                      if(element.value.ConfirmFromReceiver){%>
+                      <td style="text-align:center; color:green;"> Đã nhận đất </td>
+                      <td style="text-align:center">
+                        <form action="/processTransfer" method="POST">
+                            <input type="hidden" name="keyTransfer" value=<%= element.key%> >
+                            <input type="hidden" name="confirmed" value=<%= true %> >
+                            <input type="hidden" name="position" value=<%= true %> >
+                            
+                            <button type="submit" class="bg-green-700 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Tiến độ chuyển đất</button>
+                        </form>
+                        </td>
+                      <%}else{%>
+                        <td style="text-align:center; color:red;"> Chưa nhận đất </td>
+                        <% 
+                        let array = [];
+                        let countConfirmFromTransfer = 0;
+                        for(let el of element.value.From){
+                          if(Object.values(el) == "false"){
+                            countConfirmFromTransfer++;
+                            array.push(Object.keys(el))
+                          }
+                        }
+                        if(countConfirmFromTransfer == 0){%>
+                          <td style="text-align:center">
+                            <form action="/detailReceive" method="POST">
+                                <input type="hidden" name="key" value=<%= element.value.Land%> >
+                                <input type="hidden" name="keyTransfer" value=<%= element.key%>>
+                                <input type="hidden" name="confirmed" value=<%= false %> >
+                                <button type="submit" class="bg-green-700 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Nhận đất</button>
+                            </form>
+                            </td>
+                          
+                        <%}else{%>
+                            <td style="color: red;">Người chuyển {<%= array.join("/")%>} chưa xác nhận</td>
+                          <%}
+                        %>
+
+
+                      <%}
+                    }%>
+
+
+
+                </tr>
+              </a>
+               
+                <%}  %>
+            
+        </tbody>
+    </table>
+</div>
+
+<script>
+   if(document.getElementById("delete")){
+    document.getElementById("delete").addEventListener("click",function(){
+      document.getElementById("flash").remove()
+    })
+   }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
