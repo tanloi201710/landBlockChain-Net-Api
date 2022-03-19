@@ -7,7 +7,7 @@
         "npm": ">=5"
     },
     "scripts": {
-        "start": "nodemon --inspect index.js",
+        "start": "nodemon index.js",
         "lint": "eslint .",
         "pretest": "npm run lint",
         "test": "nyc mocha --recursive"
@@ -19,7 +19,6 @@
         "bcrypt": "^5.0.1",
         "cors": "^2.8.5",
         "dotenv": "^16.0.0",
-        "ejs": "^3.1.6",
         "express": "^4.17.1",
         "express-ejs-layouts": "^2.5.1",
         "express-fileupload": "^1.2.1",

@@ -233,7 +233,7 @@ class FabCar extends Contract {
         tobandoso, cacsothuagiapranh, dientich,
         toadocacdinh, chieudaicaccanh, hinhthucsudung,
         mucdichsudung, thoihansudung, nguongocsudung,
-        thoigiandangky, url, address) {
+        thoigiandangky, nhaO, congtrinhkhac, url, address) {
         console.info('============= START : Create Land ===========');
         const land = {
             UserId: userId,
@@ -242,13 +242,15 @@ class FabCar extends Contract {
             ToBanDoSo: tobandoso,
             CacSoThuaGiapRanh: cacsothuagiapranh,
             DienTich: dientich,
-            ToaDoCacDinh: toadocacdinh,
-            ChieuDaiCacCanh: chieudaicaccanh,
+            ToaDoCacDinh: JSON.parse(toadocacdinh),
+            ChieuDaiCacCanh: JSON.parse(chieudaicaccanh),
             HinhThucSuDung: hinhthucsudung,
             MucDichSuDung: mucdichsudung,
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
+            NhaO: JSON.parse(nhaO),
+            CongTrinhKhac: JSON.parse(congtrinhkhac),
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -261,7 +263,10 @@ class FabCar extends Contract {
         console.info('============= END : Create Land ===========');
     }
 
-    async createLandCo(ctx, arrayOwner, arrayNameOwner, thuasodat, tobandoso, cacsothuagiapranh, dientich, toadocacdinh, chieudaicaccanh, hinhthucsudung, mucdichsudung, thoihansudung, nguongocsudung, thoigiandangky, url, address) {
+    async createLandCo(ctx, arrayOwner, arrayNameOwner, thuasodat,
+        tobandoso, cacsothuagiapranh, dientich, toadocacdinh,
+        chieudaicaccanh, hinhthucsudung, mucdichsudung, thoihansudung,
+        nguongocsudung, thoigiandangky, nhaO, contrinhkhac, url, address) {
         console.info('============= START : Create Land ===========');
         // let arrayOwnerResult = arrayOwner.split(',')
         // let arrayNameResult = arrayNameOwner.split(',')
@@ -281,6 +286,8 @@ class FabCar extends Contract {
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
+            NhaO: JSON.parse(nhaO),
+            CongTrinhKhac: JSON.parse(contrinhkhac),
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -547,6 +554,11 @@ class FabCar extends Contract {
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(land)));
         console.info('============= END : Update Land ===========');
+    }
+
+
+    async splitLand(ctx, key, dientichtach, toadocacdiemmoi, chieudaicanhtach) {
+
     }
 
 }
