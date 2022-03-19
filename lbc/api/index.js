@@ -2,12 +2,6 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
-// const homeController = require('./controller/homeController')
-
-// const userController = require('./controller/userController');
-// const transferController = require('./controller/transferController');
-
-// const authMiddleware = require('./middlewares/auth.middleware')
 
 const app = express()
 

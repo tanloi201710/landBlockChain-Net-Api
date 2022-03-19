@@ -181,30 +181,10 @@ function homeController() {
 		async handleAddAsset(req, res) {
 			const { chuSoHuu, thuaDatSo, toBanDoSo, dienTich, hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh } = req.body;
 
-			// let coordinates = {};
-
-			// for (let i = 0; i < parseInt(countCoordinates); i++) {
-			// 	coordinates[`D${i + 1}`] = [parseFloat(req.body[`long${i}`]), parseFloat(req.body[`lat${i}`])]
-			// }
-
-			// let lengths = {};
-
-			// for (let i = 0; i < parseInt(countLengths); i++) {
-			// 	if (i === countLengths - 1) {
-			// 		lengths[`C${i + 1}${countLengths - i}`] = parseFloat(req.body[`length${i}`])
-			// 	} else {
-			// 		lengths[`C${i + 1}${i + 2}`] = parseFloat(req.body[`length${i}`])
-			// 	}
-			// }
-
 			let parcels = []
 			// for (let i = 0; i < countParcels; i++) {
 			// 	parcels.push(parseInt(req.body[`parcel${i}`]))
 			// }
-			// console.log(thuasodat,tobandoso,dientich,hinhthucsudung,mucdichsudung,
-			//   thoihansudung,nguongocsudung,url,landOfCity,countCoordinates ,
-			//   countLengths ,countParcels)
-			// console.log(parcels)
 
 			let thoigiandangky = getNow();
 
@@ -220,60 +200,32 @@ function homeController() {
 		},
 
 		async handleAddAssetCo(req, res) {
-			const { thuasodat, tobandoso, dientich, hinhthucsudung, mucdichsudung, thoihansudung, nguongocsudung, url, landOfCity, countOwner, countCoordinates, countLengths, countParcels } = req.body;
+			const { chuSoHuu, thuaDatSo, toBanDoSo, dienTich, hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh } = req.body;
 
-			let listOwner = [req.session.user.userId];
-			let listNameOwner = [];
-			for (let i = 0; i < countOwner; i++) {
-				listOwner.push(req.body[`owner${i}`]);
-			}
-
-			for (let i = 0; i < listOwner.length; i++) {
-				let listUser = await getUser(listOwner[i]);
-				listNameOwner.push(listUser[0].fullname)
-			}
-
-			let coordinates = {};
-
-			for (let i = 0; i < countCoordinates; i++) {
-				coordinates[`D${i + 1}`] = [parseFloat(req.body[`long${i}`]), parseFloat(req.body[`lat${i}`])]
-			}
-
-			let lengths = {};
-
-			for (let i = 0; i < countLengths; i++) {
-				if (i === countLengths - 1) {
-					lengths[`C${i + 1}${countLengths - i}`] = parseFloat(req.body[`length${i}`])
-				} else {
-					lengths[`C${i + 1}${i + 2}`] = parseFloat(req.body[`length${i}`])
-				}
-			}
+			let listOwner = chuSoHuu.map(owner => owner.userId)
+			let listNameOwner = chuSoHuu.map(owner => owner.fullname);
 
 			let parcels = []
-			for (let i = 0; i < countParcels; i++) {
-				parcels.push(req.body[`parcel${i}`])
-			}
-
+			// for (let i = 0; i < countParcels; i++) {
+			// 	parcels.push(req.body[`parcel${i}`])
+			// }
 
 			let thoigiandangky = getNow();
-
-
-			const userId = req.session.user.userId;
+			const userId = req.user.userId;
 
 			try {
-				await fabric.invoke_land_Co(userId, listOwner, listNameOwner, thuasodat, tobandoso, parcels, dientich, JSON.stringify(coordinates),
-					JSON.stringify(lengths),
-					hinhthucsudung, mucdichsudung, thoihansudung, nguongocsudung, thoigiandangky, url, landOfCity);
+				await fabric.invoke_land_Co(userId, JSON.stringify(listOwner), JSON.stringify(listNameOwner), thuaDatSo, toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
+					JSON.stringify(doDaiCacCanh),
+					hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, url, diaChi);
 				for (let i = 0; i < listOwner.length; i++) {
 					await saveMessage(listOwner[i], "Bạn đã sở một mảnh đất mới gồm nhiều người sở hữu " + listOwner.join('-'))
 				}
 
 				req.flash('success', "Đã thêm mới thành công")
-				res.redirect('/');
+				res.status(200).json({ error: false, message: 'Đăng ký đất mới thành công!' })
 			} catch (error) {
 				console.log("Add Failed")
-				req.flash('error', "Thêm đất thất bại ")
-				res.redirect('/');
+				res.json({ error: true, message: 'Lỗi, đăng ký đất mới không thành công!' });
 			}
 
 		},

@@ -268,8 +268,8 @@ class FabCar extends Contract {
         console.log(arrayOwner, arrayNameOwner)
         const land = {
             // ID:id,
-            UserId: arrayOwner,
-            Owner: arrayNameOwner,
+            UserId: JSON.parse(arrayOwner),
+            Owner: JSON.parse(arrayNameOwner),
             ThuaDatSo: thuasodat,
             ToBanDoSo: tobandoso,
             CacSoThuaGiapRanh: cacsothuagiapranh,
@@ -289,7 +289,7 @@ class FabCar extends Contract {
         };
         let resultString = await this.checkLengthLand(ctx);
         let result = JSON.parse(resultString);
-        // await ctx.stub.putState(`LAND${result.length + 1}`, Buffer.from(JSON.stringify(land)));
+        await ctx.stub.putState(`LAND${result.length + 1}`, Buffer.from(JSON.stringify(land)));
         console.info('============= END : Create Land ===========');
     }
 
