@@ -179,21 +179,28 @@ function homeController() {
 
 
 		async handleAddAsset(req, res) {
-			const { chuSoHuu, thuaDatSo, toBanDoSo, dienTich, hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh } = req.body;
+			const {
+				chuSoHuu, thuaDatSo, toBanDoSo, dienTich,
+				hinhThucSuDung, mucDichSuDung, thoiHanSuDung,
+				nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh,
+				cacSoThuaGiapRanh, nhaO, congTrinhKhac
+			} = req.body;
 
-			let parcels = []
-			// for (let i = 0; i < countParcels; i++) {
-			// 	parcels.push(parseInt(req.body[`parcel${i}`]))
-			// }
+			let parcels = Object.values(cacSoThuaGiapRanh)
+			console.log(parcels, nhaO, congTrinhKhac)
 
 			let thoigiandangky = getNow();
 
 			const userId = req.user.userId;
 			const owner = chuSoHuu.map(owner => owner.fullname)
 
-			await fabric.invoke_land_One(userId, owner, thuaDatSo, toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
+			const check = await fabric.invoke_land_One(userId, owner, thuaDatSo, toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
 				JSON.stringify(doDaiCacCanh),
-				hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, url, diaChi);
+				hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
+
+			if (!check) {
+				return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
+			}
 			await saveMessage(userId, "Bạn đã thêm một mảnh đất mới")
 
 			res.status(200).json({ error: false, message: 'Đăng ký đất mới thành công!' });

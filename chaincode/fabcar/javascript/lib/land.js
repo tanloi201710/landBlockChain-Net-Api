@@ -19,7 +19,7 @@ const StatusLane = {
     Done: "Đã duyệt"
 }
 
-class FabCar extends Contract {
+class Land extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
@@ -249,8 +249,8 @@ class FabCar extends Contract {
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
-            NhaO: JSON.parse(nhaO),
-            CongTrinhKhac: JSON.parse(congtrinhkhac),
+            NhaO: nhaO,
+            CongTrinhKhac: congtrinhkhac,
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -286,8 +286,8 @@ class FabCar extends Contract {
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
-            NhaO: JSON.parse(nhaO),
-            CongTrinhKhac: JSON.parse(contrinhkhac),
+            NhaO: nhaO,
+            CongTrinhKhac: contrinhkhac,
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -563,7 +563,7 @@ class FabCar extends Contract {
 
 }
 
-module.exports = FabCar;
+module.exports = Land
 
 
 

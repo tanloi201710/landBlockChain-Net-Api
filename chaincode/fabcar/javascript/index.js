@@ -6,11 +6,11 @@
 
 'use strict';
 
-const FabCar = require('./lib/fabcar');
+const Land = require('./lib/land');
 const Transfer = require('./lib/transfer')
 const Token = require('./lib/erc20Token')
 
-module.exports.FabCar = FabCar;
+module.exports.Land = Land;
 module.exports.Transfer = Transfer;
 module.exports.Token = Token;
-module.exports.contracts = [ FabCar, Transfer, Token];
+module.exports.contracts = [Land, Transfer, Token];

@@ -5,7 +5,7 @@ const app = require('./config')
 
 const db = getFirestore(app);
 
-async function saveUser(userId, fullname, numberPhone, idCard, password) {
+async function saveUser(userId, fullname, phoneNumber, idCard, password) {
     let date_ob = new Date();
     let monthNow = date_ob.getMonth() < 9 ? `0${date_ob.getMonth() + 1}` : `${date_ob.getMonth() + 1}`;
     let newDate = `${date_ob.getDate()}/${monthNow}/${date_ob.getFullYear()}`;
@@ -17,7 +17,7 @@ async function saveUser(userId, fullname, numberPhone, idCard, password) {
         const docRef = await addDoc(collection(db, "users"), {
             userId,
             fullname,
-            numberPhone,
+            phoneNumber,
             idCard,
             password,
             role: "user",
