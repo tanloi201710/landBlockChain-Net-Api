@@ -194,9 +194,10 @@ function homeController() {
 			const userId = req.user.userId;
 			const owner = chuSoHuu.map(owner => owner.fullname)
 
-			const check = await fabric.invoke_land_One(userId, owner, thuaDatSo, toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
-				JSON.stringify(doDaiCacCanh),
-				hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
+			const check = await fabric.invoke_land_One(userId, owner, thuaDatSo,
+				toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
+				JSON.stringify(doDaiCacCanh), hinhThucSuDung, mucDichSuDung,
+				thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
 
 			if (!check) {
 				return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
@@ -207,28 +208,31 @@ function homeController() {
 		},
 
 		async handleAddAssetCo(req, res) {
-			const { chuSoHuu, thuaDatSo, toBanDoSo, dienTich, hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh } = req.body;
+			const { chuSoHuu, thuaDatSo, toBanDoSo, dienTich,
+				hinhThucSuDung, mucDichSuDung, thoiHanSuDung,
+				nguonGoc, url, diaChi, toaDoCacDinh, doDaiCacCanh,
+				cacSoThuaGiapRanh, nhaO, congTrinhKhac } = req.body;
 
 			let listOwner = chuSoHuu.map(owner => owner.userId)
 			let listNameOwner = chuSoHuu.map(owner => owner.fullname);
 
-			let parcels = []
-			// for (let i = 0; i < countParcels; i++) {
-			// 	parcels.push(req.body[`parcel${i}`])
-			// }
+			let parcels = Object.values(cacSoThuaGiapRanh)
 
 			let thoigiandangky = getNow();
 			const userId = req.user.userId;
 
 			try {
-				await fabric.invoke_land_Co(userId, JSON.stringify(listOwner), JSON.stringify(listNameOwner), thuaDatSo, toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
-					JSON.stringify(doDaiCacCanh),
-					hinhThucSuDung, mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, url, diaChi);
+				const check = await fabric.invoke_land_Co(userId, JSON.stringify(listOwner),
+					JSON.stringify(listNameOwner), thuaDatSo, toBanDoSo, parcels, dienTich,
+					JSON.stringify(toaDoCacDinh), JSON.stringify(doDaiCacCanh), hinhThucSuDung,
+					mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
+
+				if (!check) return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
+
 				for (let i = 0; i < listOwner.length; i++) {
 					await saveMessage(listOwner[i], "Bạn đã sở một mảnh đất mới gồm nhiều người sở hữu " + listOwner.join('-'))
 				}
 
-				req.flash('success', "Đã thêm mới thành công")
 				res.status(200).json({ error: false, message: 'Đăng ký đất mới thành công!' })
 			} catch (error) {
 				console.log("Add Failed")
@@ -237,141 +241,116 @@ function homeController() {
 
 		},
 
-		// async transferLand(req, res) {
-		// 	const key = req.params.key;
-		// 	req.session.key = key;
-		// 	res.render('transferLand', { key: key, userId: req.session.user.userId })
-		// },
+		async handleTransferLand(req, res) {
+			const { owners, land, amount } = req.body
+			let userId = req.user.userId
+			let owner = owners[0].userId
+			let keyLand = land.key
+			console.log('người đc chuyển: ' + owner)
+			console.log('mãnh đất: ' + keyLand)
+			console.log('người yêu cầu chuyển: ' + userId)
 
-		// async handleTransferLand(req, res) {
-		// 	const { owner0, amount } = req.body;
-		// 	let userId = req.session.user.userId;
-		// 	const key = req.session.key;
-		// 	console.log(owner0)
-		// 	console.log(key)
-		// 	console.log(userId)
-		// 	let landString = await fabric.queryLand(key, userId)
-		// 	let land = JSON.parse(landString);
-		// 	console.log(land);
+			try {
+				// check Land is exist user
+				let landString = await fabric.queryLand(keyLand, userId)
+				let land = JSON.parse(landString);
+				if (typeof land.UserId != "object") {		// just one owner
 
-		// 	try {
-		// 		// check Land is exist user
-		// 		let landString = await fabric.queryLand(key, userId)
-		// 		let land = JSON.parse(landString);
-		// 		if (typeof land.UserId != "object") {
+					if (land.UserId == userId) {			// and owner is this user
+						let thoigiandangky = getNow();
+						await fabric.inkvode_transfer_OneToOne(keyLand, userId, owner, thoigiandangky, amount)
 
-		// 			if (land.UserId == userId) {
-		// 				console.log("VAO TOI DAY ROI")
-		// 				let thoigiandangky = getNow();
-		// 				await createTransfer(key, userId, owner0, thoigiandangky, amount)
+						await fabric.updateLand(userId, keyLand, "Đang chuyển")
+						await saveMessage(owner, `${userId} đang chuyển một mãnh đất cho bạn`)
+						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner}`)
 
-		// 				await updateLand(userId, key, "Đang chuyển")
-		// 				await saveMessage(owner0, `Bạn nhận được đất do người sở hữu ${userId} chuyển cho bạn`)
-		// 				await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner0}`)
-		// 				req.flash("success", `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner0}`)
-		// 				return res.redirect('/')
+						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}` })
 
-		// 			} else {
-		// 				req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
-		// 				return res.redirect('/')
-		// 			}
+					} else {
+						req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
+						return res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
+					}
 
-		// 		} else {
-		// 			if (land.UserId.includes(userId)) {
-		// 				console.log("DA VAO DAY ROIIIIIIIIIIIIIIIIIIIIIIIIIIIIi : " + land.UserId)
-		// 				let thoigiandangky = getNow();
+				} else {
+					if (land.UserId.includes(userId)) {			// you are one of owners
+						let thoigiandangky = getNow();
 
-		// 				await createTransferCoToOne(key, userId, land.UserId, owner0, thoigiandangky, amount)
-		// 				await updateLand(userId, key, "Đang chuyển")
+						await fabric.inkvode_transfer_CoToOne(keyLand, userId, land.UserId, owner, thoigiandangky, amount)
+						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 
-		// 				for (let i = 0; i < land.UserId.length; i++) {
-		// 					await saveMessage(land.UserId[i], `${land.UserId.join('-')} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner0}`)
-		// 				}
-		// 				await saveMessage(owner0, `Bạn nhận được yêu cầu nhận đất có mã số  ${key} từ người sở hữu ${land.UserId.join('-')}`)
+						for (let i = 0; i < land.UserId.length; i++) {
+							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}`)
+						}
+						await saveMessage(owner, `Bạn nhận được yêu cầu nhận đất có mã số  ${keyLand} từ người sở hữu ${land.UserId.join('-')}`)
 
-		// 				console.log("Da toi redirectttttttttttttttttttttttttttttttttt")
-		// 				req.flash("success", `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner0}`)
-		// 				return res.redirect('/')
-		// 			} else {
-		// 				req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
-		// 				return res.redirect('/')
-		// 			}
+						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}` })
+					} else {
+						return res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
+					}
+				}
 
+			} catch (error) {
+				console.log("LOIIIIIII : " + error);
+				res.json({ error: true, message: 'Lỗi hệ thống, không thể chuyển quyền sử dụng đất' })
+			}
 
-		// 		}
+		},
 
-		// 	} catch (error) {
-		// 		console.log("LOIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII : " + error);
-		// 		req.flash("owner0", owner0)
-		// 		req.flash("error", "Lỗi chuyển nhượng")
-		// 		res.redirect(`/transferLand/${key}`)
-		// 	}
+		async handleTransferLandCo(req, res) {
+			const { owners, keyLand, amount } = req.body;
+			let listOwner = owners.map(owner => owner.userId)
 
-		// },
+			let userId = req.user.userId;
+			console.log(`mãnh đất ${keyLand}`)
+			console.log(`người yêu cầu: ${userId}`)
+			console.log(`người được chuyển ${listOwner}`)
 
-		// async handleTransferLandCoToCo(req, res) {
-		// 	const { countOwner, amount } = req.body;
-		// 	let listOwner = []
-		// 	for (let i = 0; i < countOwner; i++) {
-		// 		listOwner.push(req.body[`owner${i}`])
-		// 	}
-		// 	let userId = req.session.user.userId;
-		// 	const key = req.session.key;
-		// 	console.log(`key ${key}`)
-		// 	console.log(`user ${userId}`)
+			try {
+				// check Land is exist user
+				let landString = await fabric.queryLand(keyLand, userId)
+				let land = JSON.parse(landString);
+				if (typeof land.UserId != "object") {		// just one owner
+					if (land.UserId == userId) {			// and owner is this user
+						let thoigiandangky = getNow();
 
+						await fabric.inkvode_transfer_OneToCo(keyLand, userId, listOwner, thoigiandangky, amount)
+						await fabric.updateLand(userId, keyLand, "Đang chuyển")
+						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}`)
 
-		// 	try {
-		// 		// check Land is exist user
-		// 		let landString = await fabric.queryLand(key, userId)
-		// 		let land = JSON.parse(landString);
-		// 		if (typeof land.UserId != "object") {
-		// 			if (land.UserId == userId) {
+						for (let i = 0; i < listOwner.length; i++) {
+							await saveMessage(listOwner[i], `Bạn nhận được yêu cầu nhận đất do người sở hữu ${userId} chuyển cho bạn`)
+						}
 
-		// 				let thoigiandangky = getNow();
+						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}` })
+					} else {
+						res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
+					}
+				} else {
+					if (land.UserId.includes(userId)) {			// you are one of owner
+						let thoigiandangky = getNow();
 
+						await fabric.inkvode_transfer_CoToCo(keyLand, userId, land.UserId, listOwner, thoigiandangky, amount)
+						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 
-		// 				await createTransferOneToCo(key, userId, userId, listOwner, thoigiandangky, amount)
-		// 				await updateLand(userId, key, "Đang chuyển")
-		// 				await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${listOwner.join('-')}`)
-		// 				for (let i = 0; i < listOwner.length; i++) {
-		// 					await saveMessage(listOwner[i], `Bạn nhận được đất do người sở hữu ${userId} chuyển cho bạn`)
-		// 				}
-		// 				req.flash("success", `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${listOwner.join('-')}`)
-		// 				res.redirect('/')
-		// 			} else {
-		// 				req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
-		// 				res.redirect('/')
-		// 			}
-		// 		} else {
-		// 			if (land.UserId.includes(userId)) {
+						for (let i = 0; i < land.UserId.length; i++) {
+							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}`)
+						}
 
-		// 				let thoigiandangky = getNow();
+						for (let i = 0; i < listOwner.length; i++) {
+							await saveMessage(listOwner[i], `Bạn nhận được yêu cầu nhận đất do người sở hữu ${land.UserId.join('-')} chuyển cho bạn`)
+						}
 
-		// 				await createTransferCoToCo(key, userId, land.UserId, listOwner, thoigiandangky, amount)
-		// 				await updateLand(userId, key, "Đang chuyển")
-		// 				for (let i = 0; i < land.UserId.length; i++) {
-		// 					await saveMessage(land.UserId[i], `${land.UserId.join('-')} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${listOwner.join('-')}`)
-		// 				}
-		// 				for (let i = 0; i < listOwner.length; i++) {
-		// 					await saveMessage(listOwner[i], `Bạn nhận được đất do người sở hữu ${land.UserId.join('-')} chuyển cho bạn`)
-		// 				}
+						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}` })
+					} else {
+						res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
+					}
+				}
+			} catch (error) {
+				console.log(`LỖI: ${error}`)
+				res.json({ error: true, message: 'Lỗi hệ thống, không thể chuyển quyền sử dụng đất!' })
+			}
 
-		// 				req.flash("success", `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${listOwner.join('-')}`)
-		// 				res.redirect('/')
-		// 			} else {
-		// 				req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
-		// 				res.redirect('/')
-		// 			}
-
-		// 		}
-
-		// 	} catch (error) {
-		// 		req.flash("error", "Lỗi chuyển nhượng")
-		// 		res.redirect(`/transferLand/${key}`)
-		// 	}
-
-		// },
+		},
 
 		// async processTransfer(req, res) {
 		// 	const { keyTransfer, confirmed, position } = req.body;

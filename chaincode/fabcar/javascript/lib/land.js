@@ -397,7 +397,7 @@ class Land extends Contract {
 
         const updateAsBytes = await ctx.stub.getState(key); // get the land from chaincode state
         if (!updateAsBytes || updateAsBytes.length === 0) {
-            throw new Error(`${key} la keylane`);
+            throw new Error(`${key} la keyland`);
         }
 
         let land = JSON.parse(updateAsBytes.toString());
