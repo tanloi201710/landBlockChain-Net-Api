@@ -297,10 +297,11 @@ function homeController() {
 		},
 
 		async handleTransferLandCo(req, res) {
-			const { owners, keyLand, amount } = req.body;
+			const { owners, land, amount } = req.body;
 			let listOwner = owners.map(owner => owner.userId)
 
-			let userId = req.user.userId;
+			let userId = req.user.userId
+			let keyLand = land.key
 			console.log(`mãnh đất ${keyLand}`)
 			console.log(`người yêu cầu: ${userId}`)
 			console.log(`người được chuyển ${listOwner}`)
