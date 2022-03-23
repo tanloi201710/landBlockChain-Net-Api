@@ -262,7 +262,7 @@ function homeController() {
 
 						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 						await saveMessage(owner, `${userId} đang chuyển một mãnh đất cho bạn`)
-						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${key} cho người sở hữu ${owner}`)
+						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}`)
 
 						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}` })
 
@@ -366,11 +366,11 @@ function homeController() {
 
 		// },
 
-		// async receiveLand(req, res) {
-		// 	const transString = await queryAllTransferReceiver(req.session.user.userId);
-		// 	const result = JSON.parse(transString);
-		// 	return res.render("receiveLand", { result: result })
-		// },
+		async getReceiveLand(req, res) {
+			const transString = await fabric.queryAllTransferReceiver(req.user.userId)
+			const result = JSON.parse(transString)
+			return res.status(200).json({ error: false, trans: result })
+		},
 
 		// async transferLandOwner(req, res) {
 		// 	const transString = await queryAllTransferOwner(req.session.user.userId);
