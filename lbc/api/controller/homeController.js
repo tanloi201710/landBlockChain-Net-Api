@@ -379,221 +379,206 @@ function homeController() {
 		// 	return res.render("transferedLand", { result: result, success: req.flash("success") })
 		// },
 
-		// async handleConfirmFromReceiver(req, res) {
-		// 	const { key, userIdFromTransfer, amount } = req.body;
-		// 	console.log(key)
-		// 	console.log(userIdFromTransfer)
-		// 	try {
-		// 		const userId = req.session.user.userId;
-		// 		let allMoney = await getBalanceToken(userId);
-		// 		console.log(`allMoney : ${allMoney}`);
+		async handleConfirmFromReceiver(req, res) {
+			const { key, userIdFromTransfer, amount } = req.body
+			console.log(key)
+			console.log(userIdFromTransfer)
+			try {
+				const userId = req.user.userId
+				let allMoney = await fabric.inkvode_token_getBalance(userId);
 
-		// 		if (typeof userIdFromTransfer != 'object') {
-		// 			if (parseInt(allMoney) >= parseInt(amount)) {
-		// 				await MoneyDetention(userId, key, amount);
-		// 			} else {
-		// 				console.log("Thieu TIEN ")
-		// 				req.flash("error", "Bạn không đủ tiền ! Ví của bạn chỉ còn " + allMoney + " đồng")
-		// 				return res.redirect('/receiveLand');
+				console.log(`allMoney : ${allMoney}`)
 
-		// 			}
-		// 		}
-		// 		let thoigiandangky = getNow();
-
-
-		// 		await updateTransfer(req.session.user.userId, key, req.session.user.role, thoigiandangky);
-		// 		await saveMessage(req.session.user.userId, "Bạn đã nhận đất thành công")
-		// 		await saveMessage(userIdFromTransfer, `Người dùng ${req.session.user.userId} đã nhận mã đất ${key}`)
-
-		// 		req.flash("success", "Bạn đã xác nhận nhận đất thành công")
-		// 		return res.redirect('/receiveLand');
+				if (typeof userIdFromTransfer != 'object') {
+					if (parseInt(allMoney) >= parseInt(amount)) {
+						await fabric.inkvode_token_detention(userId, key, amount)
+					} else {
+						console.log("Không đủ tiền nhận đất!")
+						return res.json({ error: true, message: `Bạn không có đủ tiền để nhận đất, bạn có ${allMoney}/${amount}` })
+					}
+				}
+				let thoigiandangky = getNow()
 
 
-		// 	} catch (error) {
-		// 		console.log("ERROR : " + error)
-		// 		req.flash("error", "Có lỗi xảy ra chưa nhận đất thành công")
-		// 		res.redirect('/receiveLand');
-		// 	}
+				await fabric.updateTransfer(userId, key, req.user.role, thoigiandangky)
 
-		// },
+				await saveMessage(userId, "Bạn đã nhận đất thành công")
+				await saveMessage(userIdFromTransfer, `Người dùng ${userId} đã nhận mã đất ${key}`)
 
-		// async handleConfirmFromTransferCo(req, res) {
-		// 	const { key } = req.body;
+				return res.status(200).json({ error: false, message: 'Nhận đất thành công!' })
 
-		// 	const userId = req.session.user.userId;
-		// 	try {
 
-		// 		await updateTransferCo(userId, key, "from");
-		// 		let transferString = await queryTransferOne(userId, key);
-		// 		let transfer = JSON.parse(transferString);
-		// 		await saveMessage(userId, `Bạn đã xác nhận chuyển đất { ${transfer.Land} } thành công`)
-		// 		for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-		// 			await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển mã đất ${transfer.Land}`)
-		// 		}
-		// 		req.flash("success", "Bạn đã xác nhận nhận đất thành công")
-		// 		res.redirect('/transferLandOwner');
-		// 	} catch (error) {
-		// 		console.log("ERROR : " + error)
-		// 		req.flash("error", "Có lỗi xảy ra chưa nhận đất thành công")
-		// 		res.redirect('/transferLandOwner');
-		// 	}
+			} catch (error) {
+				console.log("ERROR : " + error)
+				res.json({ error: true, message: 'Lỗi hệ thống, nhận đất không thành công!' })
+			}
 
-		// },
+		},
 
-		// async handleConfirmFromReceiverCo(req, res) {
-		// 	const { keyTransfer } = req.body;
-		// 	const userId = req.session.user.userId;
-		// 	console.log(keyTransfer)
-		// 	try {
-		// 		await updateTransferCo(userId, keyTransfer, "to");
-		// 		let transferString = await queryTransferOne(userId, keyTransfer);
-		// 		let transfer = JSON.parse(transferString);
-		// 		await saveMessage(userId, "Bạn đã nhận đất thành công")
-		// 		for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-		// 			await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển mã đất ${transfer.Land}`)
-		// 		}
+		async handleConfirmFromTransferCo(req, res) {
+			const { key } = req.body
 
-		// 		req.flash("success", "Bạn đã xác nhận nhận đất thành công")
-		// 		res.redirect('/receiveLand');
-		// 	} catch (error) {
-		// 		console.log("ERRRRRRROR: " + error)
-		// 		req.flash("error", "Có lỗi xảy ra chưa nhận đất thành công")
-		// 		res.redirect('/receiveLand');
-		// 	}
+			const userId = req.user.userId
+			try {
 
-		// },
+				await fabric.updateTransferCo(userId, key, "from")
 
-		// async updateStatusLandAdmin(req, res) {
-		// 	const { key, status, userId } = req.body;
-		// 	console.log(key);
-		// 	console.log(status);
-		// 	try {
-		// 		await updateLand(req.session.user.userId, key, status)
-		// 		req.flash("success", `Cập nhật thành công mã đất ${key} của người sở hữu ${userId} với trạng thái mới ${status}`)
-		// 		await saveMessage(userId, `Đã duyệt đất có mã số ${key} đã được duyệt thành công`)
-		// 		await saveMessage(req.session.user.userId, `Đất có mã số ${key} đã được duyệt thành công`)
-		// 		res.redirect("/")
-		// 	} catch (error) {
-		// 		req.flash("error", `Cập nhật thất bại`)
-		// 		res.redirect("/")
-		// 	}
+				let transferString = await fabric.queryTransferOne(userId, key)
+				let transfer = JSON.parse(transferString)
 
-		// },
+				await saveMessage(userId, `Bạn đã xác nhận chuyển đất { ${transfer.Land} } thành công`)
+				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
+					await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển mã đất ${transfer.Land}`)
+				}
+
+				res.status(200).json({ error: false, message: 'Xác nhận chuyển đất thành công!' });
+			} catch (error) {
+				console.log("ERROR : " + error)
+				res.json({ error: true, message: 'Lỗi hệ thống, xác nhận chuyển đất không thành công!' })
+			}
+
+		},
+
+		async handleConfirmFromReceiverCo(req, res) {
+			const { keyTransfer } = req.body
+
+			const userId = req.user.userId
+			console.log(keyTransfer)
+			try {
+				await fabric.updateTransferCo(userId, keyTransfer, "to")
+
+				let transferString = await fabric.queryTransferOne(userId, keyTransfer)
+				let transfer = JSON.parse(transferString)
+
+				await saveMessage(userId, "Bạn đã nhận đất thành công")
+				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
+					await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã nhận mãnh đất có mã ${transfer.Land}`)
+				}
+
+				res.status(200).json({ error: false, message: 'Nhận đất thành công!' })
+			} catch (error) {
+				console.log("ERRRRRRROR: " + error)
+				res.json({ error: true, message: 'Lỗi hệ thống, nhận đất không thành công!' })
+			}
+
+		},
+
+		async updateStatusLandAdmin(req, res) {
+			const { key, status, userId } = req.body
+			console.log(key);
+			console.log(status);
+			try {
+				await fabric.updateLand(req.user.userId, key, status)
+
+				await saveMessage(userId, `Đất có mã ${key} đã được duyệt thành công`)
+				await saveMessage(req.user.userId, `Đất có mã ${key} đã được duyệt thành công`)
+
+				res.status(200).json({ error: false, message: `Cập nhật trạng thái đất ${key} thành công!` })
+			} catch (error) {
+				res.json({ error: true, message: 'Lỗi hệ thống, không thể cập nhật trạng thái đất!' })
+			}
+
+		},
 
 		// // admin xac nhan chuyen dat
-		// async confirmTransferAdmin(req, res) {
-		// 	const { key } = req.body;
-		// 	const userId = req.session.user.userId;
-		// 	console.log(`key++++++++++++++++++++++: ${key}`)
+		async confirmTransferAdmin(req, res) {
+			const { key } = req.body
+			const userId = req.user.userId;
+			console.log(`key: ${key}`)
 
+			try {
+				let transferString = await fabric.queryTransferOne(userId, key)
+				let transfer = JSON.parse(transferString)
+				let oldUserId = transfer.From
+				let newUserId = transfer.To
+				let land = transfer.Land;
+				let listNameOwner = [];
+				let thoigiandangky = getNow();
 
-		// 	try {
-		// 		let transferString = await queryTransferOne(userId, key)
-		// 		let transfer = JSON.parse(transferString)
-		// 		let oldUserId = transfer.From;
-		// 		let newUserId = transfer.To;
-		// 		let land = transfer.Land;
-		// 		let listNameOwner = [];
+				if (typeof newUserId == 'object') {
+					// Get data from firebase
+					let listNewUserHandle = []
+					for (let el of newUserId) {
+						listNewUserHandle.push(Object.keys(el)[0])
+						const listNewUser = await getUser(Object.keys(el)[0])
+						listNameOwner.push(listNewUser[0].fullname)
+					}
 
-		// 		let thoigiandangky = getNow();
+					let oldUserIdHandle
+					if (typeof oldUserId == 'object') {
+						let listOldUserHandle = []
+						for (let el of oldUserId) {
+							listOldUserHandle.push(Object.keys(el)[0])
+						}
+						oldUserIdHandle = listOldUserHandle
+					} else {
+						oldUserIdHandle = oldUserId;
+					}
 
+					// Confirm transfer
+					await fabric.confirmTransferLand(land, userId, oldUserIdHandle, listNewUserHandle, listNameOwner, thoigiandangky)
+					await fabric.updateLand(req.user.userId, land, "Đã duyệt")
+					await fabric.updateTransfer(req.user.userId, key, req.user.role, thoigiandangky)
 
+					await saveMessageTransferLandSuccessLoop(oldUserIdHandle, listNewUserHandle, land)
 
+					res.status(200).json({ error: false, message: `Xác nhận chuyển đất có mã ${key} thành công!` })
 
-		// 		if (typeof newUserId == 'object') {
+				} else {
+					// get data from firebase
+					let listNewUser = await getUser(newUserId)
+					let owner = listNewUser[0].fullname
 
-		// 			let listNewUserHandle = []
-		// 			for (let el of newUserId) {
-		// 				listNewUserHandle.push(Object.keys(el)[0])
-		// 			}
+					let thoigiandangky = getNow()
 
-		// 			for (let i = 0; i < listNewUserHandle.length; i++) {
-		// 				let listNewUser = await getUser(listNewUserHandle[i]); // get fullname from firebase;
+					// process data
+					let oldUserIdHandle
+					if (typeof oldUserId == 'object') {
+						let listOldUserHandle = []
+						for (let el of oldUserId) {
+							listOldUserHandle.push(Object.keys(el)[0])
+						}
+						oldUserIdHandle = listOldUserHandle
+					} else {
+						oldUserIdHandle = oldUserId;
+					}
 
-		// 				listNameOwner.push(listNewUser[0].fullname);
-		// 			}
-		// 			let oldUserIdHandle;
-		// 			if (typeof oldUserId == 'object') {
-		// 				let listOldUserHandle = []
-		// 				for (let el of oldUserId) {
-		// 					listOldUserHandle.push(Object.keys(el)[0])
-		// 				}
-		// 				oldUserIdHandle = listOldUserHandle
-		// 			} else {
-		// 				oldUserIdHandle = oldUserId;
-		// 			}
+					// Send money to old owner
+					if (transfer.Money != 0) {
+						if (typeof transfer.From != 'object') {
+							let getAccountIdFrom = await fabric.inkvode_token_getAccountId(transfer.From)
+							let getAccountIdTo = await fabric.inkvode_token_getAccountId(transfer.To)
+							await fabric.inkvode_token_delete(userId, transfer.To, key)
+							await fabric.inkvode_token_transfer(userId, getAccountIdTo, getAccountIdFrom, transfer.Money)
+						}
+					}
 
+					// Confirm and update
+					await fabric.confirmTransferLand(land, userId, oldUserIdHandle, newUserId, owner, thoigiandangky)
+					await fabric.updateLand(userId, land, "Đã duyệt")
+					await fabric.updateTransfer(req.user.userId, key, req.user.role, thoigiandangky)
 
-		// 			await changeLandOwner(land, userId, oldUserIdHandle, listNewUserHandle, listNameOwner, thoigiandangky)
-		// 			await updateLand(req.session.user.userId, land, "Đã duyệt")
-		// 			await updateTransfer(req.session.user.userId, key, req.session.user.role, thoigiandangky)
+					// Send messages
+					if (typeof oldUserId == 'object') {
 
+						for (let i = 0; i < oldUserId.length; i++) {
+							await saveMessage(oldUserId[i], `Admin đã xác nhận đất có mã ${land}, mãnh đất đã được chuyển thành công cho người sở hữu ${newUserId}`)
+						}
+						await saveMessage(newUserId, `Admin đã xác nhận ! Bạn đã nhận được đất có mã ${land}} `)
 
-		// 			await saveMessageTransferLandSuccessLoop(oldUserIdHandle, listNewUserHandle, land)
+					} else {
+						await saveMessage(oldUserId, `Admin đã xác nhận đất có mã ${land}, mãnh đất đã được chuyển thành công cho người sở hữu ${newUserId}`)
+						await saveMessage(newUserId, `Admin đã xác nhận ! Bạn đã nhận được đất có mã ${land}} `)
+					}
 
-		// 			req.flash("success", "Xác nhận chuyển đất " + key + " thành công")
-		// 			res.redirect('/requestAllTransferLand')
+					res.status(200).json({ error: false, message: `Xác nhận chuyển đất có mã ${key} thành công!` })
+				}
+			} catch (error) {
+				console.log(`ERROR : ${error}`)
+				res.json({ error: true, message: 'Lỗi hệ thống, không thể xác nhận chuyển đất!' })
+			}
 
-		// 		} else {
-
-
-		// 			console.log("CHUYEN 1 NGUOI +++++++++++++++++++++++++++++++++++++++++++++")
-		// 			let listNewUser = await getUser(newUserId); // get fullname from firebase;
-		// 			let owner = listNewUser[0].fullname;
-
-		// 			let thoigiandangky = getNow();
-		// 			let oldUserIdHandle;
-		// 			if (typeof oldUserId == 'object') {
-		// 				let listOldUserHandle = []
-		// 				for (let el of oldUserId) {
-		// 					listOldUserHandle.push(Object.keys(el)[0])
-		// 				}
-		// 				oldUserIdHandle = listOldUserHandle
-		// 			} else {
-		// 				oldUserIdHandle = oldUserId;
-		// 			}
-
-
-		// 			if (transfer.Money != 0) {
-		// 				if (typeof transfer.From != 'object') {
-		// 					let getAccountIdFrom = await getAccountId(transfer.From);
-		// 					let getAccountIdTo = await getAccountId(transfer.To);
-		// 					await deleteMoneyDetention(userId, transfer.To, key)
-		// 					await transferToken(userId, getAccountIdTo, getAccountIdFrom, transfer.Money)
-		// 				}
-		// 			}
-
-		// 			console.log("OLDDDDDDDDDDDDDDDDD: " + oldUserIdHandle)
-
-		// 			await changeLandOwner(land, userId, oldUserIdHandle, newUserId, owner, thoigiandangky)
-		// 			await updateLand(userId, land, "Đã duyệt")
-		// 			await updateTransfer(req.session.user.userId, key, req.session.user.role, thoigiandangky)
-
-		// 			if (typeof oldUserId == 'object') {
-
-		// 				for (let i = 0; i < oldUserId.length; i++) {
-		// 					await saveMessage(oldUserId[i], `Admin đã xác nhận đất có mã số ${land} đã được chuyển thành công cho người sở hữu ${newUserId}`)
-		// 				}
-		// 				await saveMessage(newUserId, `Admin đã xác nhận ! Bạn đã nhận được đất có mã ${land}} `)
-
-		// 			} else {
-		// 				await saveMessage(oldUserId, `Admin đã xác nhận đất có mã số ${land} đã được chuyển thành công cho người sở hữu ${newUserId}`)
-		// 				await saveMessage(newUserId, `Admin đã xác nhận ! Bạn đã nhận được đất có mã ${land}} `)
-		// 			}
-
-		// 			req.flash("success", "Xác nhận chuyển đất " + key + " thành công")
-		// 			res.redirect('/requestAllTransferLand')
-		// 			res.send("Chuyen cho 1 nguoi nhan")
-		// 		}
-
-		// 		// res.redirect('/requestAllTransferLand')
-		// 	} catch (error) {
-		// 		console.log(`ERROR : ${error}`);
-		// 		req.flash("success", "Có lỗi xảy ra")
-		// 		res.redirect('/requestAllTransferLand')
-		// 	}
-
-		// },
+		},
 
 		// async cancelTransferLane(req, res) {
 		// 	try {
