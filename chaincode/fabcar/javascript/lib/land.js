@@ -32,10 +32,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -55,10 +55,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -78,10 +78,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -102,10 +102,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -125,10 +125,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -148,10 +148,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -171,10 +171,10 @@ class Land extends Contract {
                 CacSoThuaGiapRanh: '919, 905,803',
                 DienTich: 393.1,
                 ToaDoCacDinh: {
-                    "D1": [406836.70, 1183891.04], "D2": [406836.75, 1183891.44],
-                    "D3": [406836.80, 1183891.37], "D4": [406836.79, 1183891.40]
+                    D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
+                    D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
                 },
-                ChieuDaiCacCanh: { "C12": 20.5, "C23": 1.12, "C34": 7.53, "C41": 15.5 },
+                ChieuDaiCacCanh: { C12: 20.5, C23: 1.12, C34: 7.53, C41: 15.5 },
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
@@ -196,12 +196,13 @@ class Land extends Contract {
 
         const Transfers = [
             {
-                TimeStart: "01/03/2021",
-                TimeEnd: "10/03/2021",
-                From: "ntt@gmail.com",
+                TimeStart: "01/03/2022",
+                TimeEnd: "-/-/-",
+                From: "phn@gmail.com",
                 To: "htl@gmail.com",
                 ConfirmFromReceiver: false,
                 ConfirmFromAdmin: false,
+                Money: 0,
                 Land: "LAND0"
             }
         ]

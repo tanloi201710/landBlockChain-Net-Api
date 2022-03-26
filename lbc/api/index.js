@@ -20,6 +20,7 @@ const managerRoute = require('./routes/manager')
 const whitelist = [
   'http://localhost:3000',
 ]
+
 const corsOptions = {
   origin: whitelist
 }
@@ -35,32 +36,16 @@ app.use('/api/land', landRoute)
 
 // app.get('/detail/:key', authMiddleware.requireAuth, homeController().detail)
 // app.get('/', authMiddleware.requireAuth, homeController().index)
-// app.post('/handleAddAsset', authMiddleware.requireAuth, homeController().handleAddAsset)
-// app.post('/handleAddAssetCo', authMiddleware.requireAuth, homeController().handleAddAssetCo)
-
-// app.get('/addAsset', authMiddleware.requireAuth, homeController().addAsset)
 
 
-// app.get('/login', userController().login)
-// app.get('/register', userController().register)
-// app.post('/handleRegister', userController().handleRegister)
-// app.post('/handleLogin', userController().handleLogin)
 
-
-// app.get('/transferLand/:key', authMiddleware.requireAuth, homeController().transferLand)
-// app.post('/handleTransferLand', authMiddleware.requireAuth, homeController().handleTransferLand)
-// app.post('/handleTransferLandCo', authMiddleware.requireAuth, homeController().handleTransferLandCoToCo)
-
-// app.post('/processTransfer', authMiddleware.requireAuth, homeController().processTransfer)
-
-
-// app.get('/receiveLand', authMiddleware.requireAuth, homeController().receiveLand);
-// app.get('/transferLandOwner', authMiddleware.requireAuth, homeController().transferLandOwner);
+// app.get('/receiveLand', authMiddleware.requireAuth, homeController().receiveLand)
+// app.get('/transferLandOwner', authMiddleware.requireAuth, homeController().transferLandOwner)
 
 // app.get('/requestAllTransferLand', authMiddleware.requireAuth, homeController().transferAdmin)
-// app.post('/handleConfirmFromReceiver', authMiddleware.requireAuth, homeController().handleConfirmFromReceiver);
-// app.post('/handleConfirmFromTransferCo', authMiddleware.requireAuth, homeController().handleConfirmFromTransferCo);
-// app.post('/handleConfirmFromReceiverCo', authMiddleware.requireAuth, homeController().handleConfirmFromReceiverCo);
+// app.post('/handleConfirmFromReceiver', authMiddleware.requireAuth, homeController().handleConfirmFromReceiver)
+// app.post('/handleConfirmFromTransferCo', authMiddleware.requireAuth, homeController().handleConfirmFromTransferCo)
+// app.post('/handleConfirmFromReceiverCo', authMiddleware.requireAuth, homeController().handleConfirmFromReceiverCo)
 
 // app.post('/detailReceive', authMiddleware.requireAuth, homeController().detailReceive)
 
