@@ -465,12 +465,19 @@ function homeController() {
 
 		async updateStatusLandAdmin(req, res) {
 			const { key, status, userId } = req.body
-			console.log(key);
-			console.log(status);
+			console.log(key)
+			console.log(status)
+			console.log(userId)
 			try {
 				await fabric.updateLand(req.user.userId, key, status)
 
-				await saveMessage(userId, `Đất có mã ${key} đã được duyệt thành công`)
+				if (typeof userId === 'object') {
+					for (let i = 0; i < userId.length; i++) {
+						await saveMessage(userId[i], `Đất có mã ${key} đã được duyệt thành công`)
+					}
+				} else {
+					await saveMessage(userId, `Đất có mã ${key} đã được duyệt thành công`)
+				}
 				await saveMessage(req.user.userId, `Đất có mã ${key} đã được duyệt thành công`)
 
 				res.status(200).json({ error: false, message: `Cập nhật trạng thái đất ${key} thành công!` })
