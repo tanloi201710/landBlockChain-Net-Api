@@ -6,6 +6,9 @@ const router = require('express').Router()
 // Get all receive transfer
 router.get('/receive', verifyTokenAndAuthorization, homeController().getReceiveLand)
 
+// Get all send transfer
+router.get('/send', verifyTokenAndAuthorization, homeController().getSendLand)
+
 // Add land for one
 router.post('/add', verifyTokenAndAuthorization, homeController().handleAddAsset)
 

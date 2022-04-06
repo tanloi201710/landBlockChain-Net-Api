@@ -19,7 +19,7 @@ const StatusLane = {
 
 
 
-function homeController() {
+const homeController = () => {
 	return {
 		async index(req, res) {
 			try {
@@ -372,12 +372,12 @@ function homeController() {
 			return res.status(200).json({ error: false, trans: result })
 		},
 
-		// async transferLandOwner(req, res) {
-		// 	const transString = await queryAllTransferOwner(req.session.user.userId);
-		// 	// const transStringCo = await queryAllTransferOwnerCo(req.session.user.userId);
-		// 	const result = JSON.parse(transString);
-		// 	return res.render("transferedLand", { result: result, success: req.flash("success") })
-		// },
+
+		async getSendLand(req, res) {
+			const transString = await fabric.queryTransferOwner(req.user.userId)
+			const result = JSON.parse(transString)
+			return res.status(200).json({ error: false, trans: result })
+		},
 
 		async handleConfirmFromReceiver(req, res) {
 			const { key, userIdFromTransfer, amount } = req.body
@@ -389,21 +389,26 @@ function homeController() {
 
 				console.log(`allMoney : ${allMoney}`)
 
-				if (typeof userIdFromTransfer != 'object') {
-					if (parseInt(allMoney) >= parseInt(amount)) {
-						await fabric.inkvode_token_detention(userId, key, amount)
-					} else {
-						console.log("Không đủ tiền nhận đất!")
-						return res.json({ error: true, message: `Bạn không có đủ tiền để nhận đất, bạn có ${allMoney}/${amount}` })
-					}
+				if (parseInt(allMoney) >= parseInt(amount)) {
+					await fabric.inkvode_token_detention(userId, key, amount)
+				} else {
+					console.log("Không đủ tiền nhận đất!")
+					return res.json({ error: true, message: `Bạn không có đủ tiền để nhận đất, bạn có ${allMoney}/${amount}` })
 				}
-				let thoigiandangky = getNow()
 
+				let thoigiandangky = getNow()
 
 				await fabric.updateTransfer(userId, key, req.user.role, thoigiandangky)
 
 				await saveMessage(userId, "Bạn đã nhận đất thành công")
-				await saveMessage(userIdFromTransfer, `Người dùng ${userId} đã nhận mã đất ${key}`)
+				if (typeof userIdFromTransfer != 'object') {
+					await saveMessage(userIdFromTransfer, `Người dùng ${userId} đã nhận mã đất ${key}`)
+
+				} else {
+					for (let i = 0; i < userIdFromTransfer.length; i++) {
+						await saveMessage(userIdFromTransfer[i], `Người dùng ${userId} đã nhận mã đất ${key}`)
+					}
+				}
 
 				return res.status(200).json({ error: false, message: 'Nhận đất thành công!' })
 
@@ -426,9 +431,10 @@ function homeController() {
 				let transferString = await fabric.queryTransferOne(userId, key)
 				let transfer = JSON.parse(transferString)
 
-				await saveMessage(userId, `Bạn đã xác nhận chuyển đất { ${transfer.Land} } thành công`)
+				await saveMessage(userId, `Bạn đã xác nhận chuyển đất có mã { ${transfer.Land} } thành công`)
 				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-					await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển mã đất ${transfer.Land}`)
+					if (Object.keys(transfer.From)[i] !== userId)
+						await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển đất có mã ${transfer.Land}`)
 				}
 
 				res.status(200).json({ error: false, message: 'Xác nhận chuyển đất thành công!' });
@@ -452,7 +458,8 @@ function homeController() {
 
 				await saveMessage(userId, "Bạn đã nhận đất thành công")
 				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-					await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã nhận mãnh đất có mã ${transfer.Land}`)
+					if (Object.keys(transfer.From)[i] !== userId)
+						await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã nhận mãnh đất có mã ${transfer.Land}`)
 				}
 
 				res.status(200).json({ error: false, message: 'Nhận đất thành công!' })
@@ -471,14 +478,15 @@ function homeController() {
 			try {
 				await fabric.updateLand(req.user.userId, key, status)
 
+				const content = `Đất có mã ${key} đã được duyệt thành công`
 				if (typeof userId === 'object') {
 					for (let i = 0; i < userId.length; i++) {
-						await saveMessage(userId[i], `Đất có mã ${key} đã được duyệt thành công`)
+						await saveMessage(userId[i], content)
 					}
 				} else {
-					await saveMessage(userId, `Đất có mã ${key} đã được duyệt thành công`)
+					await saveMessage(userId, content)
 				}
-				await saveMessage(req.user.userId, `Đất có mã ${key} đã được duyệt thành công`)
+				await saveMessage(req.user.userId, content)
 
 				res.status(200).json({ error: false, message: `Cập nhật trạng thái đất ${key} thành công!` })
 			} catch (error) {
@@ -490,7 +498,7 @@ function homeController() {
 		// // admin xac nhan chuyen dat
 		async confirmTransferAdmin(req, res) {
 			const { key } = req.body
-			const userId = req.user.userId;
+			const userId = req.user.userId
 			console.log(`key: ${key}`)
 
 			try {
@@ -498,9 +506,9 @@ function homeController() {
 				let transfer = JSON.parse(transferString)
 				let oldUserId = transfer.From
 				let newUserId = transfer.To
-				let land = transfer.Land;
-				let listNameOwner = [];
-				let thoigiandangky = getNow();
+				let land = transfer.Land
+				let listNameOwner = []
+				let thoigiandangky = getNow()
 
 				if (typeof newUserId == 'object') {
 					// Get data from firebase
@@ -519,7 +527,7 @@ function homeController() {
 						}
 						oldUserIdHandle = listOldUserHandle
 					} else {
-						oldUserIdHandle = oldUserId;
+						oldUserIdHandle = oldUserId
 					}
 
 					// Confirm transfer
@@ -553,10 +561,10 @@ function homeController() {
 					// Send money to old owner
 					if (transfer.Money != 0) {
 						if (typeof transfer.From != 'object') {
-							let getAccountIdFrom = await fabric.inkvode_token_getAccountId(transfer.From)
-							let getAccountIdTo = await fabric.inkvode_token_getAccountId(transfer.To)
+							let getAccountIdReceiver = await fabric.inkvode_token_getAccountId(transfer.From)
+							let getAccountIdSender = await fabric.inkvode_token_getAccountId(transfer.To)
 							await fabric.inkvode_token_delete(userId, transfer.To, key)
-							await fabric.inkvode_token_transfer(userId, getAccountIdTo, getAccountIdFrom, transfer.Money)
+							await fabric.inkvode_token_transfer(userId, getAccountIdSender, getAccountIdReceiver, transfer.Money)
 						}
 					}
 
