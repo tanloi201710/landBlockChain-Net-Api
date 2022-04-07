@@ -7,6 +7,9 @@ const router = require('express').Router()
 // home page data
 router.get('/', verifyTokenAndManager, homeController().index)
 
+// Get all transfer
+router.get('/transfers', verifyTokenAndManager, homeController().getTransferAdmin)
+
 // update status land
 router.post('/updateStatusLand', verifyTokenAndManager, homeController().updateStatusLandAdmin)
 

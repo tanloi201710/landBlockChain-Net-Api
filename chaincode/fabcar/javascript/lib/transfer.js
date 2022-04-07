@@ -59,19 +59,19 @@ class Transfer extends Contract {
         console.info('============= END : Create transfer ===========');
     }
 
-    async createTransferCoOwnerForOne(ctx, land, arrayUserTransferList, userReceive1, time, amount) {
-        console.info('============= START : Create transfer ===========');
+    async createTransferCoOwnerForOne(ctx, land, userId, arrayUserTransferList, userReceive1, time, amount) {
+        console.info('============= START : Create transfer ===========')
 
         let arrayF = arrayUserTransferList.split(',')
 
         let arrayTransfer2 = []
         for (let i = 0; i < arrayF.length; i++) {
             let obj = {}
-            if (i == 0) {
-                obj[arrayF[i]] = true;
+            if (arrayF[i] == userId) {
+                obj[arrayF[i]] = true
                 arrayTransfer2.push(obj)
             } else {
-                obj[arrayF[i]] = false;
+                obj[arrayF[i]] = false
                 arrayTransfer2.push(obj)
             }
 
@@ -87,14 +87,14 @@ class Transfer extends Contract {
             Money: amount,
             docType: "trans"
         };
-        let resultString = await this.checkLengthTransfer(ctx);
-        let result = JSON.parse(resultString);
-        await ctx.stub.putState(`TRANS${result.length + 1}`, Buffer.from(JSON.stringify(transfer)));
-        console.info('============= END : Create transfer ===========');
+        let resultString = await this.checkLengthTransfer(ctx)
+        let result = JSON.parse(resultString)
+        await ctx.stub.putState(`TRANS${result.length + 1}`, Buffer.from(JSON.stringify(transfer)))
+        console.info('============= END : Create transfer ===========')
     }
 
 
-    async createTransferCoOwnerForCo(ctx, land, arrayUserTransfer, arrayUserReceiver, time, amount) {
+    async createTransferCoOwnerForCo(ctx, land, userId, arrayUserTransfer, arrayUserReceiver, time, amount) {
         console.info('============= START : Create transfer ===========');
         let arrayFrom = arrayUserTransfer.split(',')
         let arrayTo = arrayUserReceiver.split(',')
@@ -104,7 +104,7 @@ class Transfer extends Contract {
 
         for (let i = 0; i < arrayFrom.length; i++) {
             let obj = {}
-            if (i == 0) {
+            if (arrayFrom[i] == userId) {
                 obj[arrayFrom[i]] = true;
                 arrayTransfer.push(obj)
             } else {

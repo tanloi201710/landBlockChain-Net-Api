@@ -9,16 +9,6 @@ const saveMessageTransferLandSuccessLoop = require('./saveMessageLoop')
 const getNow = require('./getDateNow')
 
 
-
-
-const StatusLane = {
-	NotApprovedYet: "Chưa duyệt",
-	Transfering: "Đang chuyển",
-	Done: "Đã duyệt"
-}
-
-
-
 const homeController = () => {
 	return {
 		async index(req, res) {
@@ -50,35 +40,6 @@ const homeController = () => {
 		},
 
 
-		// async transferAdmin(req, res) {
-		// 	const transString = await fabric.queryAllTransfer(req.session.user.userId);
-		// 	const result = JSON.parse(transString);
-		// 	return res.render("allTransfer", { menu: result })
-		// },
-
-		// async detail(req, res) {
-		// 	const key = req.params.key;
-		// 	const notFound = 'Not Found';
-		// 	const userId = req.session.user.userId;
-		// 	const detail = await fabric.queryLand(key, userId);
-		// 	const obj = JSON.parse(detail);
-		// 	console.dir(obj)
-
-		// 	if (detail == 'Not found') {
-		// 		return res.render("detail", { detail: notFound });
-		// 	}
-
-		// 	let requestPerson;
-		// 	if (req.session.user.role == "manager") {
-		// 		requestPerson = "manager";
-		// 	} else {
-		// 		requestPerson = "transferUser";
-		// 	}
-
-		// 	return res.render("detail", { detail: obj, key: key, requestPerson: requestPerson });
-
-		// },
-
 		// async detailReceive(req, res) {
 		// 	const { key, keyTransfer, confirmed, position } = req.body;
 		// 	console.log(`key :` + key)
@@ -93,88 +54,6 @@ const homeController = () => {
 		// 		// return res.redirect("/receiveLand")
 		// 		res.send("Loi roi")
 		// 	}
-
-		// },
-
-		// async demoSubmit(req, res) {
-		// 	try {
-		// 		const toadocacdinh = '{"D1": [406836.70,1183891.04],"D2": [406836.75,1183891.44],"D3": [406836.80,1183891.37],"D4": [406836.79,1183891.40]}';
-		// 		const chieudaicaccanh = '{"C12": 20.5, "C23": 1.12, "C34":7.53, "C41" :15.5}';
-		// 		await invokeLandOne('Land5', 'Phuc Nguyen', "Nam", '12312312', 'Ca Mau', 192, 1, [123, 124, 125], 1200, toadocacdinh,
-		// 			chieudaicaccanh,
-		// 			"Chung", "Mua ban", "vinh vien", "Mua cua nha nuoc", "18/9/2025");
-		// 		// res.send('OK');
-		// 		res.redirect('http://localhost:3000/');
-		// 	} catch (error) {
-		// 		res.send(error);
-		// 	}
-		// },
-
-		// async addAsset(req, res) {
-		// 	res.render("addAssetHome")
-		// },
-
-		// async addAssetOne(req, res) {
-		// 	res.render("addAsset", { layout: false })
-		// },
-
-
-		// async addAssetCo(req, res) {
-		// 	res.render("addAssetCo", { layout: false })
-		// },
-
-		// async blank(req, res) {
-		// 	res.render("blank", { layout: false })
-		// },
-
-		// async addAssetFormOwner(req, res) {
-		// 	const { count, listCoOwner } = req.body;
-
-		// 	let data = []
-		// 	if (listCoOwner != "") {
-		// 		data = listCoOwner.split(',')
-
-		// 	}
-
-		// 	let userId = req.session.user.userId;
-		// 	let result = []
-		// 	for (let el of data) {
-		// 		if (el !== userId) {
-		// 			result.push(el)
-		// 		}
-		// 	}
-
-		// 	res.render("addAssetFormOwner", { layout: false, count: count, data: result })
-		// },
-
-		// //add coordinates
-		// async addCoordinatesForm(req, res) {
-		// 	const { count } = req.body;
-
-		// 	console.log("count : " + count)
-		// 	res.render("addCoordinatesForm", { layout: false, count: count })
-		// },
-
-		// //add lengths
-		// async addLength(req, res) {
-		// 	const count = req.body.count;
-		// 	console.log("count : " + count)
-		// 	res.render("addLength", { layout: false, count: count })
-		// },
-
-
-		// //các số thửa giáp ranh
-		// async addParcels(req, res) {
-		// 	const { count, parcels } = req.body;
-		// 	let data = []
-		// 	console.log(parcels);
-		// 	if (parcels != "") {
-		// 		data = parcels.split(",")
-		// 	}
-		// 	console.log('count ne : ' + parcels)
-		// 	res.render('addParcels', { layout: false, count: count, data: data })
-		// },
-
 
 
 
@@ -377,6 +256,12 @@ const homeController = () => {
 			const transString = await fabric.queryTransferOwner(req.user.userId)
 			const result = JSON.parse(transString)
 			return res.status(200).json({ error: false, trans: result })
+		},
+
+		async getTransferAdmin(req, res) {
+			const transString = await fabric.queryAllTransfer(req.user.userId)
+			const result = JSON.parse(transString)
+			return res.status(200).json({ error: false, allTransfer: result })
 		},
 
 		async handleConfirmFromReceiver(req, res) {
