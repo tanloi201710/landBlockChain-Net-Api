@@ -15,4 +15,7 @@ router.post('/confirmReceiveGroup', verifyTokenAndAuthorization, homeController(
 // Confirm transfer from transfer group
 router.post('/confirmTransfer', verifyTokenAndAuthorization, homeController().handleConfirmFromTransferCo)
 
+// Cancel transfer
+router.post('/cancelTransfer', verifyTokenAndAuthorization, homeController().cancelTransferLand)
+
 module.exports = router

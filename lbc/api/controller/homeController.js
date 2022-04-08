@@ -287,11 +287,11 @@ const homeController = () => {
 
 				await saveMessage(userId, "Bạn đã nhận đất thành công")
 				if (typeof userIdFromTransfer != 'object') {
-					await saveMessage(userIdFromTransfer, `Người dùng ${userId} đã nhận mã đất ${key}`)
+					await saveMessage(userIdFromTransfer, `Người dùng ${userId} đã nhận đất có mã ${key}`)
 
 				} else {
 					for (let i = 0; i < userIdFromTransfer.length; i++) {
-						await saveMessage(userIdFromTransfer[i], `Người dùng ${userId} đã nhận mã đất ${key}`)
+						await saveMessage(userIdFromTransfer[i], `Người dùng ${userId} đã nhận đất có mã ${key}`)
 					}
 				}
 
@@ -316,7 +316,7 @@ const homeController = () => {
 				let transferString = await fabric.queryTransferOne(userId, key)
 				let transfer = JSON.parse(transferString)
 
-				await saveMessage(userId, `Bạn đã xác nhận chuyển đất có mã { ${transfer.Land} } thành công`)
+				await saveMessage(userId, `Bạn đã xác nhận chuyển đất có mã ${transfer.Land} thành công`)
 				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
 					if (Object.keys(transfer.From)[i] !== userId)
 						await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển đất có mã ${transfer.Land}`)
@@ -480,26 +480,28 @@ const homeController = () => {
 
 		},
 
-		// async cancelTransferLane(req, res) {
-		// 	try {
-		// 		const { keyLand, keyTransfer, receiver, receiverConfirm } = req.body;
-		// 		await cancleTransferFromUser(keyTransfer, req.session.user.userId, keyLand, req.session.user.role);
-		// 		console.log("receiverConfirm: " + receiverConfirm)
-		// 		if (receiverConfirm == "true") {
-		// 			await deleteMoneyDetention(req.session.user.userId, receiver, keyTransfer);
-		// 		}
-		// 		await updateLand(req.session.user.userId, keyLand, "Đã duyệt")
-		// 		await saveMessage(req.session.user.userId, `Bạn đã hủy chuyển nhượng mã đất ${keyLand} thành công`)
-		// 		await saveMessage(receiver, `Người chuyển mã đất ${keyLand} đã hủy giao dịch`)
-		// 		req.flash('success', `Bạn đã hủy chuyển mã đất ${keyLand} cho người nhận ${receiver} thành công`)
-		// 		res.redirect('/')
-		// 	} catch (error) {
-		// 		console.log(`ERROR : ${error}`)
-		// 		req.flash('success', `Hủy chuyển không thành công`)
-		// 		res.redirect('/')
-		// 	}
+		async cancelTransferLand(req, res) {
+			try {
+				const { keyLand, keyTransfer, receiver, receiverConfirm } = req.body
 
-		// },
+				await fabric.cancleTransferFromUser(keyTransfer, req.user.userId, keyLand, req.user.role)
+				console.log("receiverConfirm: " + receiverConfirm)
+
+				if (receiverConfirm == "true") {
+					await fabric.inkvode_token_delete(req.user.userId, receiver, keyTransfer)
+				}
+				await fabric.updateLand(req.user.userId, keyLand, "Đã duyệt")
+
+				await saveMessage(req.user.userId, `Bạn đã hủy chuyển nhượng đất có mã ${keyLand} thành công`)
+				await saveMessage(receiver, `Người chuyển đất có mã ${keyLand} đã hủy giao dịch`)
+
+				res.status(200).json({ error: false, message: `Hủy chuyển đất có mã ${keyLand} cho người nhận ${receiver} thành công` })
+			} catch (error) {
+				console.log(`ERROR : ${error}`)
+				res.json({ error: true, message: 'Lỗi hệ thống, hủy chuyển không thành công' })
+			}
+
+		},
 
 		// //modify land
 
