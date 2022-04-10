@@ -291,7 +291,7 @@ const homeController = () => {
 
 				} else {
 					for (let i = 0; i < userIdFromTransfer.length; i++) {
-						await saveMessage(userIdFromTransfer[i], `Người dùng ${userId} đã nhận đất có mã ${key}`)
+						await saveMessage(Object.keys(userIdFromTransfer[i]).toString(), `Người dùng ${userId} đã nhận đất có mã ${key}`)
 					}
 				}
 
@@ -318,8 +318,8 @@ const homeController = () => {
 
 				await saveMessage(userId, `Bạn đã xác nhận chuyển đất có mã ${transfer.Land} thành công`)
 				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-					if (Object.keys(transfer.From)[i] !== userId)
-						await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã xác nhận chuyển đất có mã ${transfer.Land}`)
+					if (Object.keys(transfer.From[i]).toString() !== userId)
+						await saveMessage(Object.keys(transfer.From[i]).toString(), `Người dùng ${userId} đã xác nhận chuyển đất có mã ${transfer.Land}`)
 				}
 
 				res.status(200).json({ error: false, message: 'Xác nhận chuyển đất thành công!' });
@@ -343,8 +343,8 @@ const homeController = () => {
 
 				await saveMessage(userId, "Bạn đã nhận đất thành công")
 				for (let i = 0; i < Object.keys(transfer.From).length; i++) {
-					if (Object.keys(transfer.From)[i] !== userId)
-						await saveMessage(Object.keys(transfer.From)[i], `Người dùng ${userId} đã nhận mãnh đất có mã ${transfer.Land}`)
+					if (Object.keys(transfer.From[i]).toString() !== userId)
+						await saveMessage(Object.keys(transfer.From[i]).toString(), `Người dùng ${userId} đã nhận mãnh đất có mã ${transfer.Land}`)
 				}
 
 				res.status(200).json({ error: false, message: 'Nhận đất thành công!' })
@@ -488,12 +488,26 @@ const homeController = () => {
 				console.log("receiverConfirm: " + receiverConfirm)
 
 				if (receiverConfirm == "true") {
-					await fabric.inkvode_token_delete(req.user.userId, receiver, keyTransfer)
+					if (typeof receiver == 'object') {
+						for (let i = 0; i < receiver.length; i++) {
+							if (receiver[i][Object.keys(receiver[i]).toString()]) {
+								await fabric.inkvode_token_delete(req.user.userId, Object.keys(receiver[i]).toString(), keyTransfer)
+							}
+						}
+					} else {
+						await fabric.inkvode_token_delete(req.user.userId, receiver, keyTransfer)
+					}
 				}
 				await fabric.updateLand(req.user.userId, keyLand, "Đã duyệt")
 
 				await saveMessage(req.user.userId, `Bạn đã hủy chuyển nhượng đất có mã ${keyLand} thành công`)
-				await saveMessage(receiver, `Người chuyển đất có mã ${keyLand} đã hủy giao dịch`)
+				if (typeof receiver == 'object') {
+					for (let i = 0; i < receiver.length; i++) {
+						await saveMessage(Object.keys(receiver[i]).toString(), `Người chuyển đất có mã ${keyLand} đã hủy giao dịch`)
+					}
+				} else {
+					await saveMessage(receiver, `Người chuyển đất có mã ${keyLand} đã hủy giao dịch`)
+				}
 
 				res.status(200).json({ error: false, message: `Hủy chuyển đất có mã ${keyLand} cho người nhận ${receiver} thành công` })
 			} catch (error) {

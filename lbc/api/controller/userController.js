@@ -122,6 +122,36 @@ function userController() {
 
         },
 
+        async initUsers(req, res) {
+            const nva = "htl@gmail.com"
+            const nvb = "phn@gmail.com"
+            const nvc = "ntt@gmail.com"
+            const nvd = "pnh@gmail.com"
+            const admin = "admin@gmail.com"
+            await fabric.register(nva, mspOrg[0], organizationsCA[0], affiliations[0]),
+                await fabric.register(nvb, mspOrg[0], organizationsCA[0], affiliations[0]),
+                await fabric.register(nvc, mspOrg[0], organizationsCA[0], affiliations[0]),
+                await fabric.register(nvd, mspOrg[0], organizationsCA[0], affiliations[0]),
+                await fabric.register(admin, mspOrg[0], organizationsCA[0], affiliations[0]),
+
+
+                bcrypt.hash('123456', saltRounds, async (err, hash) => {
+                    // Store hash in your password DB.
+                    if (err) {
+                        // req.flash('error', 'Có lỗi xảy ra ! Đăng ký không thành công');
+                        return res.json({ error: true, message: err });
+                    }
+                    await saveUserAdmin(hash)
+
+                    await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash)
+                    await saveUser(nvb, "Phạm Hiếu Nghĩa", "+84795517167", "313456789", hash)
+                    await saveUser(nvc, "Trương Thị Tú", "+84796425188", "890494094", hash)
+                    await saveUser(nvd, "Phạm Ngọc Hân", "+84795678253", "908488212", hash)
+                })
+
+            res.status(200).json({ error: false, message: 'Init users successfully!' })
+        },
+
         async handleAddToken(req, res) {
             const userId = req.user.userId;
             const { amount, recipient } = req.body;

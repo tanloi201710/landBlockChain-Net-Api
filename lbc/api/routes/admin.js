@@ -8,5 +8,7 @@ const router = require('express').Router()
 // Add manager
 router.post('/addManager', userController().handleAddManager)
 
+// Init users
+router.get('/init', userController().initUsers)
 
 module.exports = router

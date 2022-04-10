@@ -11,10 +11,10 @@ const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
-async function main(key, userId, lane, role) {
+async function main(key, userId, land, role) {
     try {
         // load the network configuration
-        const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+        const ccpPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
         let ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
         // Create a new file system based wallet for managing identities.
@@ -43,13 +43,9 @@ async function main(key, userId, lane, role) {
         // Submit the specified transaction.
         // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
         // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR12', 'Dave')
-        console.log("UPPPPPPPPP: " + key);
-        console.log("UPPPPPPPPP: " + userId);
-        console.log("UPPPPPPPPP: " + lane);
 
         if (role == "user") {
-            console.log("VAO DAY ROI")
-            await contract.submitTransaction('DeleteAsset', key, userId, lane);
+            await contract.submitTransaction('DeleteAsset', key, userId, land);
             console.log('Transaction has been submitted');
         } else {
             await contract.submitTransaction('DeleteAssetFromAdmin', key);

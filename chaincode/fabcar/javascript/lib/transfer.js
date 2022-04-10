@@ -369,9 +369,21 @@ class Transfer extends Contract {
 
 
     // DeleteAsset deletes an given asset from the world state.
-    async DeleteAsset(ctx, key, userId, lane) {
-        const transferAsBytes = await ctx.stub.getState(key);
-        let result = JSON.parse(transferAsBytes);
+    async DeleteAsset(ctx, key, userId, land) {
+        const transferAsBytes = await ctx.stub.getState(key)
+        let result = JSON.parse(transferAsBytes)
+
+        console.log('Moi do toi day')
+
+        // if (result.Land != land) throw new Error(`${key} co loi khi xoa, thong tin khong dung: ${land}`)
+
+        // if (typeof result.From == 'object') {
+        //     if (result.From.some(item => Object.keys(item).toString() != userId))
+        //         throw new Error(`${key} co loi khi xoa, userId khong dung`)
+        // } else if (result.From != userId) throw new Error(`${key} co loi khi xoa, userId khong dung`)
+
+
+        // await ctx.stub.deleteState(key)
 
         if (result.From != userId || result.Land != lane) throw new Error(`${key} co loi khi xoa`);;
         await ctx.stub.deleteState(key);
