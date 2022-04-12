@@ -517,7 +517,7 @@ class Land extends Contract {
 
         const updateAsBytes = await ctx.stub.getState(key); // get the land from chaincode state
         if (!updateAsBytes || updateAsBytes.length === 0) {
-            throw new Error(`${key} la keylane`);
+            throw new Error(`${key} la keyland`);
         }
 
         console.log("toadocacdinhh 1 " + chieudaicaccanh)
@@ -557,10 +557,6 @@ class Land extends Contract {
         console.info('============= END : Update Land ===========');
     }
 
-
-    async splitLand(ctx, key, dientichtach, toadocacdiemmoi, chieudaicanhtach) {
-
-    }
 
 }
 

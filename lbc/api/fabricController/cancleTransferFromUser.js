@@ -44,6 +44,7 @@ async function main(key, userId, land, role) {
         // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
         // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR12', 'Dave')
 
+        console.log(key, userId, land, role)
         if (role == "user") {
             await contract.submitTransaction('DeleteAsset', key, userId, land);
             console.log('Transaction has been submitted');
