@@ -44,7 +44,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "P.12, Q.1, TP.HCM"
+                Address: "P.12, Q.1, TP.HCM",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
             {
@@ -67,7 +69,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "P.5, Q.Bình Tân, TP.HCM"
+                Address: "P.5, Q.Bình Tân, TP.HCM",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
             {
@@ -90,7 +94,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "TP.HCM"
+                Address: "TP.HCM",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
 
@@ -114,7 +120,9 @@ class Land extends Contract {
                 Status: "Đang chuyển",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "Long Xuyên, An Giang"
+                Address: "Long Xuyên, An Giang",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
             {
@@ -137,7 +145,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "Chợ Mới, An Giang"
+                Address: "Chợ Mới, An Giang",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
             {
@@ -160,7 +170,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "Ninh Kiều, Cần Thơ"
+                Address: "Ninh Kiều, Cần Thơ",
+                NhaO: [],
+                CongTrinhKhac: []
 
             },
             {
@@ -183,8 +195,9 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "Cái Răng, Cần Thơ"
-
+                Address: "Cái Răng, Cần Thơ",
+                NhaO: [],
+                CongTrinhKhac: []
             },
         ];
 
