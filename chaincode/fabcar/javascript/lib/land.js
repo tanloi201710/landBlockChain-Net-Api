@@ -263,8 +263,8 @@ class Land extends Contract {
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
-            NhaO: nhaO,
-            CongTrinhKhac: congtrinhkhac,
+            NhaO: JSON.parse(nhaO),
+            CongTrinhKhac: JSON.parse(congtrinhkhac),
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -300,8 +300,8 @@ class Land extends Contract {
             ThoiHanSuDung: thoihansudung,
             NguonGocSuDung: nguongocsudung,
             ThoiGianDangKy: thoigiandangky,
-            NhaO: nhaO,
-            CongTrinhKhac: contrinhkhac,
+            NhaO: JSON.parse(nhaO),
+            CongTrinhKhac: JSON.parse(contrinhkhac),
             Status: "Chưa duyệt",
             Transactions: [],
             docType: 'land',
@@ -444,7 +444,7 @@ class Land extends Contract {
         }
 
         let check = JSON.parse(checkAsBytes.toString());
-        if (check.coOwner.includes(userId)) {
+        if (check.userId.includes(userId)) {
             return true;
         }
 

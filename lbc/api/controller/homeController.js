@@ -76,7 +76,7 @@ const homeController = () => {
 			const check = await fabric.invoke_land_One(userId, owner, thuaDatSo,
 				toBanDoSo, parcels, dienTich, JSON.stringify(toaDoCacDinh),
 				JSON.stringify(doDaiCacCanh), hinhThucSuDung, mucDichSuDung,
-				thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
+				thoiHanSuDung, nguonGoc, thoigiandangky, JSON.stringify(nhaO), JSON.stringify(congTrinhKhac), url, diaChi);
 
 			if (!check) {
 				return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
