@@ -1,6 +1,3 @@
-
-
-
 /*
  * Copyright IBM Corp. All Rights Reserved.
  *
@@ -13,7 +10,7 @@ const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
-async function main(key, userId, oldUserId, newUserId, newOwner, time) {
+async function main(userId, land, userRequest, numOfLands, areaOfLands, time) {
     try {
         // load the network configuration
         const ccpPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -40,16 +37,12 @@ async function main(key, userId, oldUserId, newUserId, newOwner, time) {
         const network = await gateway.getNetwork('mychannel');
 
         // Get the contract from the network.
-        const contract = network.getContract('lbc');
-        console.log("Transfering")
-        console.log(oldUserId)
-        console.log(newUserId)
-        console.log(newOwner)
-        console.log(time)
+        const contract = network.getContract('lbc', 'Split');
+        console.log("Create Split Request")
         // Submit the specified transaction.
         // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
         // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR12', 'Dave')
-        await contract.submitTransaction('changeLandOwner', key, oldUserId, newUserId, newOwner, time);
+        await contract.submitTransaction('createSplitRequestFromCo', land, userId, userRequest, numOfLands, areaOfLands, time);
         console.log('Transaction has been submitted');
 
         // Disconnect from the gateway.
@@ -61,25 +54,4 @@ async function main(key, userId, oldUserId, newUserId, newOwner, time) {
     }
 }
 
-
-// main();
-
 module.exports = main;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

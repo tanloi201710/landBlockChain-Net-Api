@@ -264,6 +264,18 @@ const homeController = () => {
 			return res.status(200).json({ error: false, allTransfer: result })
 		},
 
+		async getSplitRequestAdmin(req, res) {
+			const splitRequestString = await fabric.queryAllSplitRequest(req.user.userId)
+			const result = JSON.parse(splitRequestString)
+			res.status(200).json({ error: false, splitRequest: result })
+		},
+
+		async getSplitRequestOwner(req, res) {
+			const splitRequestString = await fabric.queryOwnerSplitRequest(req.user.userId)
+			const result = JSON.parse(splitRequestString)
+			res.status(200).json({ error: false, splitRequest: result })
+		},
+
 		async handleConfirmFromReceiver(req, res) {
 			const { key, userIdFromTransfer, amount, landKey } = req.body
 			console.log(key)
@@ -353,6 +365,89 @@ const homeController = () => {
 				res.json({ error: true, message: 'Lỗi hệ thống, nhận đất không thành công!' })
 			}
 
+		},
+
+		async handleConfirmSplit(req, res) {
+			const { key } = req.body
+			const userId = req.user.userId
+			const role = req.user.role
+			const time = getNow()
+
+			try {
+				const currentRequestString = await fabric.queryOneSplitRequest(userId, key)
+				let currentRequest = JSON.parse(currentRequestString)
+
+				if (typeof currentRequest.UserRequest == 'object') {
+					await fabric.updateSplitRequestFromCo(userId, time)
+
+					const otherUser = currentRequest.UserRequest.filter(item => Object.keys(item).toString() != userId)
+
+					if (!otherUser.some(item => Object.values(item).toString() == 'false')) {
+						await fabric.confirmSplitLand(currentRequest.Land, userId, currentRequest.DataProcessed, time)
+
+						for (let i = 0; i < currentRequest.UserRequest.length; i++) {
+							await saveMessage(Object.keys(currentRequest.UserRequest[i]).toString(), `Yêu cầu tách thửa đất có mã ${currentRequest.Land} đã được xử lý thành công!`)
+						}
+
+						return res.status(200).json({ error: false, message: `Tách thửa đất có mã ${currentRequest.Land} thành công!` })
+					}
+
+					await saveMessage(userId, `Bạn đã xác nhận tách thửa đất có mã ${currentRequest.Land} với thông tin được cung cấp!`)
+
+					for (let i = 0; i < currentRequest.UserRequest.length; i++) {
+						if (Object.keys(currentRequest.UserRequest[i]).toString() != userId) {
+							await saveMessage(Object.keys(currentRequest.UserRequest[i]).toString(), `Người dùng ${userId} đã xác nhận tách thửa đất có mã ${currentRequest.Land} với thông tin được cung cấp!`)
+						}
+					}
+
+					return res.status(200).json({ error: false, message: 'Xác nhận tách thửa thành công!' })
+
+				} else {
+					await fabric.updateSplitRequest(userId, key, role, time)
+
+					await fabric.confirmSplitLand(currentRequest.Land, userId, currentRequest.DataProcessed, time)
+
+					await saveMessage(userId, `Yêu cầu tách thửa đất có mã ${currentRequest.Land} đã được xử lý thành công!`)
+
+					return res.status(200).json({ error: false, message: `Tách thửa đất có mã ${currentRequest.Land} thành công!` })
+				}
+
+			} catch (error) {
+				console.log(error)
+				res.json({ error: true, message: 'Lỗi hệ thống, xác nhận tách thửa không thành công!' })
+			}
+
+
+		},
+
+		async AdminConfirmSplit(req, res) {
+			const { key, dataProcessed } = req.body
+
+			console.log('data length' + dataProcessed.length)
+			const userId = req.user.userId
+			const role = req.user.role
+			const time = getNow()
+
+			try {
+				const currentRequestString = await fabric.queryOneSplitRequest(userId, key)
+				let currentRequest = JSON.parse(currentRequestString)
+
+				await fabric.updateSplitRequest(userId, key, role, dataProcessed, time)
+
+				await saveMessage(userId, `Đã gửi kết quả xử lý tách đất có mã ${currentRequest.Land} cho người dùng!`)
+
+				if (typeof currentRequest.UserRequest == 'object') {
+					for (let i = 0; i < currentRequest.UserRequest.length; i++) {
+						await saveMessage(Object.keys(currentRequest.UserRequest[i]).toString(), `Admin đã gửi kết quả xử lý tách thửa đất có mã ${currentRequest.Land}, bạn cần xác nhận để tiến hành tách thửa đất!`)
+					}
+				} else {
+					await saveMessage(currentRequest.UserRequest.toString(), `Admin đã gửi kết quả xử lý tách thửa đất có mã ${currentRequest.Land}, bạn cần xác nhận để tiến hành tách thửa đất!`)
+				}
+
+				return res.status(200).json({ error: false, message: 'Gửi kết quả xử lý thành công!' })
+			} catch (error) {
+
+			}
 		},
 
 		async updateStatusLandAdmin(req, res) {

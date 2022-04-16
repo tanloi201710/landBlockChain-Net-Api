@@ -5,10 +5,15 @@ const sendMail = (to, subject, text, html) => {
     const hostMail = 'node-send-1019@outlook.com.vn'
 
     const transporter = nodemailer.createTransport({
-        service: 'hotmail',
+        host: "smtp-mail.outlook.com", // hostname
+        secureConnection: false, // TLS requires secureConnection to be false
+        port: 587, // port for secure SMTP
+        tls: {
+            ciphers: 'SSLv3'
+        },
         auth: {
             user: hostMail,
-            pass: process.env.MAIL_PASS
+            pass: 'outHt148#Li'
         }
     })
 
@@ -26,9 +31,10 @@ const sendMail = (to, subject, text, html) => {
             return false
         }
 
-        console.log(info)
+        console.log(info.response)
         return true
     })
+
 }
 
 module.exports = sendMail

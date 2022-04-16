@@ -32,6 +32,14 @@ const transferLand = require('./transferLand')
 const updateLand = require('./updateLand')
 const updateTransfer = require('./updateTransfer')
 const updateTransferCo = require('./updateTransferCo')
+const inkvode_split_One = require('./inkvode_split_One')
+const inkvode_split_Co = require('./inkvode_split_Co')
+const queryAllSplitRequest = require('./queryAllSplitRequest')
+const queryOneSplitRequest = require('./queryOneSplitRequest')
+const queryOwnerSplitRequest = require('./queryOwnerSplitRequest')
+const updateSplitRequest = require('./updateSplitRequest')
+const updateSplitRequestFromCo = require('./updateSplitRequestFromCo')
+const confirmSplitLand = require('./confirmSplitLand')
 
 
 module.exports = {
@@ -45,5 +53,8 @@ module.exports = {
     modifyLand, queryAllLands, queryAllLandsCo, queryAllLandsCoUserAndAdmin,
     queryAllTransfer, queryAllTransferReceiver, queryLand, queryTransfer,
     queryTransferOne, queryTransferOwner, queryTransferOwnerCo, register,
-    searchWithCondition, transferLand, updateLand, updateTransfer, updateTransferCo
+    searchWithCondition, transferLand, updateLand, updateTransfer, updateTransferCo,
+    inkvode_split_One, inkvode_split_Co, queryAllSplitRequest, queryOneSplitRequest,
+    queryOwnerSplitRequest, updateSplitRequest, updateSplitRequestFromCo,
+    confirmSplitLand
 }

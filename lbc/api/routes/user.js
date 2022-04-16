@@ -6,6 +6,9 @@ const router = require('express').Router()
 // home page data
 router.get('/', verifyTokenAndAuthorization, homeController().index)
 
+// Get split request
+router.get('/split', verifyTokenAndAuthorization, homeController().getSplitRequestOwner)
+
 // Confirm transfer from receiver(one)
 router.post('/confirmReceiveOne', verifyTokenAndAuthorization, homeController().handleConfirmFromReceiver)
 

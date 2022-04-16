@@ -10,6 +10,9 @@ router.get('/', verifyTokenAndManager, homeController().index)
 // Get all transfer
 router.get('/transfers', verifyTokenAndManager, homeController().getTransferAdmin)
 
+// Get all split request
+router.get('/split', verifyTokenAndManager, homeController().getSplitRequestAdmin)
+
 // update status land
 router.post('/updateStatusLand', verifyTokenAndManager, homeController().updateStatusLandAdmin)
 

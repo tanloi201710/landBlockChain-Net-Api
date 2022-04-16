@@ -570,6 +570,45 @@ class Land extends Contract {
         console.info('============= END : Update Land ===========');
     }
 
+    async splitLand(ctx, userId, key, dataProcessed, time) {
+        console.info('============= START : Split Land ===========')
+        const splitAsBytes = await ctx.stub.getState(key); // get the land from chaincode state
+        if (!splitAsBytes || splitAsBytes.length === 0) {
+            throw new Error(`${key} la keyland`);
+        }
+
+        let transactionObj = {}
+        transactionObj[time] = `Người dùng ${userId} tách thửa từ thửa đất có mã ${key}`
+
+        let currentLand = JSON.parse(splitAsBytes.toString())
+        currentLand.ThuaDatSo = dataProcessed[0].ThuaDatSo
+        currentLand.ToBanDoSo = dataProcessed[0].ToBanDoSo
+        currentLand.CacSoThuaGiapRanh = dataProcessed[0].CacSoThuaGiapRanh
+        currentLand.DienTich = dataProcessed[0].DienTich
+        currentLand.ToaDoCacDinh = dataProcessed[0].ToaDoCacDinh
+        currentLand.ChieuDaiCacCanh = dataProcessed[0].ChieuDaiCacCanh
+        currentLand.Transactions.push(transactionObj)
+        currentLand.NhaO = dataProcessed[0].NhaO
+        currentLand.CongTrinhKhac = dataProcessed[0].CongTrinhKhac
+        currentLand.Status = 'Đã duyệt'
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentLand)))
+
+        for (let i = 1; i < dataProcessed.length; i++) {
+            const tempArray = []
+            dataProcessed[i].docType = 'land'
+            dataProcessed[i].Status = 'Đã duyệt'
+            dataProcessed[i].Transactions = tempArray.push(transactionObj)
+
+            let resultString = await this.checkLengthLand(ctx);
+            let result = JSON.parse(resultString)
+
+            await ctx.stub.putState('LAND' + result.length + 1, Buffer.from(JSON.stringify(dataProcessed[i])))
+            console.info('Added <--> ', dataProcessed[i])
+        }
+
+        console.info('============= START : Split Land ===========')
+    }
 
 }
 

@@ -81,17 +81,17 @@ class Split extends Contract {
         let splitRequest = JSON.parse(splitAsBytes.toString())
         if (role == 'user') {
             splitRequest.ConfirmFromUser = true
+            splitRequest.TimeEnd = time
         } else if (role == 'manager') {
             splitRequest.ConfirmFromAdmin = true
             splitRequest.DataProcessed = dataProcessed
-            splitRequest.TimeEnd = time
         }
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(splitRequest)))
         console.info('============= END : Update split request ===========')
     }
 
-    async updateSplitRequestFromCo(ctx, userId) {
+    async updateSplitRequestFromCo(ctx, userId, time) {
 
         console.info('============= START : Update split request Co ===========')
 
@@ -106,6 +106,10 @@ class Split extends Contract {
             if (Object.keys(splitRequest.UserRequest[i]) == userId) {
                 splitRequest.UserRequest[i][userId] = true
             }
+        }
+
+        if (!splitRequest.UserRequest.some(item => Object.values(item).toString() == 'false')) {
+            splitRequest.TimeEnd = time
         }
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(splitRequest)))
