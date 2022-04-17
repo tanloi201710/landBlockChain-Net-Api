@@ -21,4 +21,7 @@ router.post('/confirmTransfer', verifyTokenAndAuthorization, homeController().ha
 // Cancel transfer
 router.post('/cancelTransfer', verifyTokenAndAuthorization, homeController().cancelTransferLand)
 
+// Confirm split land
+router.post('/confirmSplit', verifyTokenAndAuthorization, homeController().handleConfirmSplit)
+
 module.exports = router

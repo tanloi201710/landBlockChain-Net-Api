@@ -19,5 +19,8 @@ router.post('/updateStatusLand', verifyTokenAndManager, homeController().updateS
 // Confirm transfer
 router.post('/confirmTransfer', verifyTokenAndManager, homeController().confirmTransferAdmin)
 
+// Confirm split land
+router.post('confirmSplit', verifyTokenAndManager, homeController().AdminConfirmSplit)
+
 
 module.exports = router

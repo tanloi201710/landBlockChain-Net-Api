@@ -245,6 +245,36 @@ const homeController = () => {
 
 		// },
 
+		async handleSplitLand(req, res) {
+			const { key, userRequest, areaArray } = req.body
+
+			const userId = req.user.userId
+			const time = getNow()
+			try {
+				if (typeof userRequest == 'object') {
+					await fabric.inkvode_split_Co(userId, key, userRequest, areaArray.length, areaArray, time)
+
+					for (let i = 0; i < userRequest.length; i++) {
+						if (userRequest[i] == userId) {
+							await saveMessage(userRequest[i], `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+						} else {
+							await saveMessage(userRequest[i], `Người dùng ${userId} đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+						}
+					}
+
+				} else {
+					await fabric.inkvode_split_One(userId, key, areaArray.length, areaArray, time)
+
+					await saveMessage(userId, `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+				}
+
+				return res.status(200).json({ error: false, message: `Yêu cầu tách thửa đất có mã ${key} thành công!` })
+			} catch (error) {
+				console.log('ERROR: ' + error)
+				return res.json({ error: true, message: 'Lỗi hệ thống, gửi yêu cầu tách đất không thành công!' })
+			}
+		},
+
 		async getReceiveLand(req, res) {
 			const transString = await fabric.queryAllTransferReceiver(req.user.userId)
 			const result = JSON.parse(transString)

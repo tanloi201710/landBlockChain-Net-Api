@@ -21,4 +21,7 @@ router.post('/transferOne', verifyTokenAndAuthorization, homeController().handle
 // Transfer land for group
 router.post('/transferGroup', verifyTokenAndAuthorization, homeController().handleTransferLandCo)
 
+// Split land 
+router.post('/split', verifyTokenAndAuthorization, homeController().handleSplitLand)
+
 module.exports = router
