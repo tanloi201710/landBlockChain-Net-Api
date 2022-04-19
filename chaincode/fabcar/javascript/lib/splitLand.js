@@ -91,7 +91,7 @@ class Split extends Contract {
         console.info('============= END : Update split request ===========')
     }
 
-    async updateSplitRequestFromCo(ctx, userId, time) {
+    async updateSplitRequestFromCo(ctx, key, userId, time) {
 
         console.info('============= START : Update split request Co ===========')
 

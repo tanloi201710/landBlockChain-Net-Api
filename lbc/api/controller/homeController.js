@@ -254,18 +254,22 @@ const homeController = () => {
 				if (typeof userRequest == 'object') {
 					await fabric.inkvode_split_Co(userId, key, userRequest, areaArray.length, areaArray, time)
 
+					await fabric.updateLand(userId, key, 'Đang tách')
+
 					for (let i = 0; i < userRequest.length; i++) {
 						if (userRequest[i] == userId) {
-							await saveMessage(userRequest[i], `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+							await saveMessage(userRequest[i], `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mảnh!`)
 						} else {
-							await saveMessage(userRequest[i], `Người dùng ${userId} đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+							await saveMessage(userRequest[i], `Người dùng ${userId} đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mảnh!`)
 						}
 					}
 
 				} else {
 					await fabric.inkvode_split_One(userId, key, areaArray.length, areaArray, time)
 
-					await saveMessage(userId, `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mãnh!`)
+					await fabric.updateLand(userId, key, 'Đang tách')
+
+					await saveMessage(userId, `Bạn đã yêu cầu tách thửa đất có mã ${key} thành ${areaArray.length} mảnh!`)
 				}
 
 				return res.status(200).json({ error: false, message: `Yêu cầu tách thửa đất có mã ${key} thành công!` })
@@ -408,7 +412,7 @@ const homeController = () => {
 				let currentRequest = JSON.parse(currentRequestString)
 
 				if (typeof currentRequest.UserRequest == 'object') {
-					await fabric.updateSplitRequestFromCo(userId, time)
+					await fabric.updateSplitRequestFromCo(key, userId, time)
 
 					const otherUser = currentRequest.UserRequest.filter(item => Object.keys(item).toString() != userId)
 
