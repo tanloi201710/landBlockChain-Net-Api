@@ -81,7 +81,7 @@ const homeController = () => {
 			if (!check) {
 				return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
 			}
-			await saveMessage(userId, "Bạn đã thêm một mảnh đất mới")
+			await saveMessage(userId, "Bạn đã đăng ký một mãnh đất mới!")
 
 			res.status(200).json({ error: false, message: 'Đăng ký đất mới thành công!' });
 		},
@@ -104,12 +104,13 @@ const homeController = () => {
 				const check = await fabric.invoke_land_Co(userId, JSON.stringify(listOwner),
 					JSON.stringify(listNameOwner), thuaDatSo, toBanDoSo, parcels, dienTich,
 					JSON.stringify(toaDoCacDinh), JSON.stringify(doDaiCacCanh), hinhThucSuDung,
-					mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, nhaO, congTrinhKhac, url, diaChi);
+					mucDichSuDung, thoiHanSuDung, nguonGoc, thoigiandangky, JSON.stringify(nhaO),
+					JSON.stringify(congTrinhKhac), url, diaChi);
 
 				if (!check) return res.json({ error: true, message: 'Xác thực người dùng thất bại, thêm đất mới không thành công!' })
 
 				for (let i = 0; i < listOwner.length; i++) {
-					await saveMessage(listOwner[i], "Bạn đã sở một mảnh đất mới gồm nhiều người sở hữu " + listOwner.join('-'))
+					await saveMessage(listOwner[i], "Bạn đã đăng ký một mảnh đất mới gồm nhiều người sở hữu " + listOwner.join('-'))
 				}
 
 				res.status(200).json({ error: false, message: 'Đăng ký đất mới thành công!' })
@@ -417,7 +418,7 @@ const homeController = () => {
 					const otherUser = currentRequest.UserRequest.filter(item => Object.keys(item).toString() != userId)
 
 					if (!otherUser.some(item => Object.values(item).toString() == 'false')) {
-						await fabric.confirmSplitLand(currentRequest.Land, userId, currentRequest.DataProcessed, time)
+						await fabric.confirmSplitLand(currentRequest.Land, userId, JSON.stringify(currentRequest.DataProcessed), time)
 
 						for (let i = 0; i < currentRequest.UserRequest.length; i++) {
 							await saveMessage(Object.keys(currentRequest.UserRequest[i]).toString(), `Yêu cầu tách thửa đất có mã ${currentRequest.Land} đã được xử lý thành công!`)
@@ -439,7 +440,7 @@ const homeController = () => {
 				} else {
 					await fabric.updateSplitRequest(userId, key, role, time)
 
-					await fabric.confirmSplitLand(currentRequest.Land, userId, currentRequest.DataProcessed, time)
+					await fabric.confirmSplitLand(currentRequest.Land, userId, JSON.stringify(currentRequest.DataProcessed), time)
 
 					await saveMessage(userId, `Yêu cầu tách thửa đất có mã ${currentRequest.Land} đã được xử lý thành công!`)
 
@@ -458,6 +459,7 @@ const homeController = () => {
 			const { key, dataProcessed } = req.body
 
 			console.log('data length' + dataProcessed.length)
+			console.log('keySplit ' + key)
 			const userId = req.user.userId
 			const role = req.user.role
 			const time = getNow()
@@ -466,7 +468,7 @@ const homeController = () => {
 				const currentRequestString = await fabric.queryOneSplitRequest(userId, key)
 				let currentRequest = JSON.parse(currentRequestString)
 
-				await fabric.updateSplitRequest(userId, key, role, dataProcessed, time)
+				await fabric.updateSplitRequest(userId, key, role, time, JSON.stringify(dataProcessed))
 
 				await saveMessage(userId, `Đã gửi kết quả xử lý tách đất có mã ${currentRequest.Land} cho người dùng!`)
 

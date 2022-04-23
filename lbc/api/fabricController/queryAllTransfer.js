@@ -43,10 +43,7 @@ async function main(userId) {
         const contract = network.getContract('lbc', 'Transfer');
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-        // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-        // const result = await contract.evaluateTransaction('queryAllLands',{"selector":{"IdentityCard":"35852514222"}});
-        // const result = await contract.evaluateTransaction('queryAllLands',{"selector":{"docType":"land","owner":"tom"}});
+
         console.log("Da vao toi day")
         let result = await contract.evaluateTransaction('queryTransferAll');
         if (result == "Not found") {

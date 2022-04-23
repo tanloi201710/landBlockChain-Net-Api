@@ -69,7 +69,7 @@ class Split extends Contract {
         console.info('============= END : Create split request Co ===========')
     }
 
-    async updateSplitRequest(ctx, key, role, dataProcessed = [], time) {
+    async updateSplitRequest(ctx, key, role, dataProcessed, time) {
 
         console.info('============= START : Update split request ===========')
 
@@ -84,7 +84,7 @@ class Split extends Contract {
             splitRequest.TimeEnd = time
         } else if (role == 'manager') {
             splitRequest.ConfirmFromAdmin = true
-            splitRequest.DataProcessed = dataProcessed
+            splitRequest.DataProcessed = JSON.parse(dataProcessed)
         }
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(splitRequest)))

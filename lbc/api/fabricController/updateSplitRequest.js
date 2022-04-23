@@ -11,7 +11,7 @@ const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
-async function main(userId, key, role, dataProcessed = [], time) {
+async function main(userId, key, role, time, dataProcessed = []) {
     try {
         // load the network configuration
         const ccpPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -41,8 +41,8 @@ async function main(userId, key, role, dataProcessed = [], time) {
         const contract = network.getContract('lbc', 'Split');
         console.log("update split request")
         // Submit the specified transaction.
-        // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
-        // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR12', 'Dave')
+        console.log(key, role, dataProcessed, time)
+
         await contract.submitTransaction('updateSplitRequest', key, role, dataProcessed, time);
         console.log('Transaction has been submitted');
 

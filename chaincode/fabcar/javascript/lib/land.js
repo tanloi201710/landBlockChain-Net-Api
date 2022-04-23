@@ -580,31 +580,34 @@ class Land extends Contract {
         let transactionObj = {}
         transactionObj[time] = `Người dùng ${userId} tách thửa từ thửa đất có mã ${key}`
 
+        let ObjDataProcessed = JSON.parse(dataProcessed)
+
         let currentLand = JSON.parse(splitAsBytes.toString())
-        currentLand.ThuaDatSo = dataProcessed[0].ThuaDatSo
-        currentLand.ToBanDoSo = dataProcessed[0].ToBanDoSo
-        currentLand.CacSoThuaGiapRanh = dataProcessed[0].CacSoThuaGiapRanh
-        currentLand.DienTich = dataProcessed[0].DienTich
-        currentLand.ToaDoCacDinh = dataProcessed[0].ToaDoCacDinh
-        currentLand.ChieuDaiCacCanh = dataProcessed[0].ChieuDaiCacCanh
+        currentLand.ThuaDatSo = ObjDataProcessed[0].ThuaDatSo
+        currentLand.ToBanDoSo = ObjDataProcessed[0].ToBanDoSo
+        currentLand.CacSoThuaGiapRanh = Object.values(ObjDataProcessed[0].CacSoThuaGiapRanh).toString()
+        currentLand.DienTich = ObjDataProcessed[0].DienTich
+        currentLand.ToaDoCacDinh = ObjDataProcessed[0].ToaDoCacDinh
+        currentLand.ChieuDaiCacCanh = ObjDataProcessed[0].ChieuDaiCacCanh
         currentLand.Transactions.push(transactionObj)
-        currentLand.NhaO = dataProcessed[0].NhaO
-        currentLand.CongTrinhKhac = dataProcessed[0].CongTrinhKhac
+        currentLand.NhaO = ObjDataProcessed[0].NhaO
+        currentLand.CongTrinhKhac = ObjDataProcessed[0].CongTrinhKhac
         currentLand.Status = 'Đã duyệt'
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentLand)))
 
-        for (let i = 1; i < dataProcessed.length; i++) {
-            const tempArray = []
-            dataProcessed[i].docType = 'land'
-            dataProcessed[i].Status = 'Đã duyệt'
-            dataProcessed[i].Transactions = tempArray.push(transactionObj)
+        for (let i = 1; i < ObjDataProcessed.length; i++) {
+            ObjDataProcessed[i].CacSoThuaGiapRanh = Object.values(ObjDataProcessed[i].CacSoThuaGiapRanh).toString()
+            ObjDataProcessed[i].docType = 'land'
+            ObjDataProcessed[i].Status = 'Đã duyệt'
+            ObjDataProcessed[i].Transactions.push(transactionObj)
+            ObjDataProcessed[i].ThoiGianDangKy = time
 
             let resultString = await this.checkLengthLand(ctx);
             let result = JSON.parse(resultString)
 
-            await ctx.stub.putState('LAND' + result.length + 1, Buffer.from(JSON.stringify(dataProcessed[i])))
-            console.info('Added <--> ', dataProcessed[i])
+            await ctx.stub.putState(`LAND${result.length + 1}`, Buffer.from(JSON.stringify(ObjDataProcessed[i])))
+            console.info('Added <--> ', ObjDataProcessed[i])
         }
 
         console.info('============= START : Split Land ===========')
