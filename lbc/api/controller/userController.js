@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { saveMessage, getUser, getAllUser, saveUser, saveUserAdmin,
     updateInfo, getAllUserManager, getMessage,
-    saveUserManager, deleteUserManager } = require('./saveUser');
+    saveUserManager, deleteUserManager, readMessage } = require('./firebaseController');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -145,7 +145,7 @@ function userController() {
 
                     await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash)
                     await saveUser(nvb, "Phạm Hiếu Nghĩa", "+84795517167", "313456789", hash)
-                    await saveUser(nvc, "Trương Thị Tú", "+84796425188", "890494094", hash)
+                    await saveUser(nvc, "Ngô Tấn Thành", "+84796425188", "890494094", hash)
                     await saveUser(nvd, "Phạm Ngọc Hân", "+84795678253", "908488212", hash)
                 })
 
@@ -153,8 +153,8 @@ function userController() {
         },
 
         async handleAddToken(req, res) {
-            const userId = req.user.userId;
-            const { amount, recipient } = req.body;
+            const userId = req.user.userId
+            const { amount, recipient } = req.body
 
             try {
                 await fabric.inkvode_token(userId, amount, recipient)
@@ -163,6 +163,17 @@ function userController() {
                 res.json({ error: true, message: 'Lỗi hệ thống, thêm token không thành công!' })
             }
 
+        },
+
+        async handleReadMessages(req, res) {
+            const userId = req.user.userId
+            try {
+                await readMessage(userId)
+                res.status(200).json({ error: false, message: 'Đã đọc tất cả thông báo' })
+            } catch (error) {
+                console.log('ERROR ', error)
+                res.json({ error: true, message: 'Lỗi hệ thống, đọc thông báo không thành công' })
+            }
         },
 
         //statistical

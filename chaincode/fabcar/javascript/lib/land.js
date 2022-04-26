@@ -592,6 +592,7 @@ class Land extends Contract {
         currentLand.Transactions.push(transactionObj)
         currentLand.NhaO = ObjDataProcessed[0].NhaO
         currentLand.CongTrinhKhac = ObjDataProcessed[0].CongTrinhKhac
+        currentLand.ThoiGianDangKy = time
         currentLand.Status = 'Đã duyệt'
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentLand)))

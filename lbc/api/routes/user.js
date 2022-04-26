@@ -1,4 +1,5 @@
 const homeController = require('../controller/homeController')
+const userController = require('../controller/userController')
 const { verifyTokenAndAuthorization } = require('../middlewares/verifyToken')
 
 const router = require('express').Router()
@@ -23,5 +24,8 @@ router.post('/cancelTransfer', verifyTokenAndAuthorization, homeController().can
 
 // Confirm split land
 router.post('/confirmSplit', verifyTokenAndAuthorization, homeController().handleConfirmSplit)
+
+// Read the Notifications
+router.put('/readNotifications', verifyTokenAndAuthorization, userController().handleReadMessages)
 
 module.exports = router

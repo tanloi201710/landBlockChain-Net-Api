@@ -32,7 +32,7 @@ class Split extends Contract {
         console.info('============= END : Create split request ===========')
     }
 
-    async createSplitRequestFromCo(ctx, land, userId, userRequest, numOfLands, areaOfLands, time) {
+    async createSplitRequestFromCo(ctx, land, userRequest, numOfLands, areaOfLands, time) {
         console.info('============= START : Create split request Co ===========')
 
         const arrayRequest = userRequest.split(',')
@@ -41,13 +41,8 @@ class Split extends Contract {
 
         for (let i = 0; i < arrayRequest.length; i++) {
             let object = {}
-            if (arrayRequest[i] == userId) {
-                object[arrayRequest[i]] = true
-                arrayObj.push(object)
-            } else {
-                object[arrayRequest[i]] = false
-                arrayObj.push(object)
-            }
+            object[arrayRequest[i]] = false
+            arrayObj.push(object)
         }
 
         const splitRequest = {

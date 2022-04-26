@@ -1,7 +1,7 @@
 const fabric = require('../fabricController')
 
 
-const { saveMessage, getMessage, getUser } = require('./saveUser')
+const { saveMessage, getMessage, getUser } = require('./firebaseController')
 
 const saveMessageTransferLandSuccessLoop = require('./saveMessageLoop')
 

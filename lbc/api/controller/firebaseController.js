@@ -1,7 +1,7 @@
 
 
 const { getFirestore, doc, collection, getDocs, setDoc, addDoc, deleteDoc, updateDoc, query, where, serverTimestamp, orderBy } = require("firebase/firestore")
-const app = require('./config')
+const app = require('./firebaseConfig')
 
 const db = getFirestore(app);
 
@@ -171,37 +171,59 @@ async function getMessage(userId) {
     }
 }
 
+async function getKeyMessages(userId) {
+    console.log("Get key messages")
+    const q = query(collection(db, "messages"), where("userId", "==", userId))
+    const messageSnapshot = await getDocs(q)
+    if (messageSnapshot.docs.length > 0) {
+        const cityList = messageSnapshot.docs.filter(doc => doc.data().Seen == false)
 
-async function updateMessage(userId) {
+        const resultList = cityList.map(element => element.id)
 
-    try {
-        const docRef = await setDoc(collection(db, "messages"), {
-            userId: userId,
-            fullname: fullname,
-            numberPhone: numberPhone,
-            idCard: idCard,
-            password: password,
-            role: "user"
-        });
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
+        return resultList;
+    } else {
+        console.log("Login Failed")
+        return []
     }
+}
 
+async function getKeyUser(userId) {
+    console.log('Get key user')
+    const q = query(collection(db, "users"), where("userId", "==", userId))
+    const userSnapshot = await getDocs(q)
+
+    if (userSnapshot.length > 0) {
+        const userList = userSnapshot.docs.map(doc => doc.data())
+        console.log(userList[0].id)
+        return userList[0].id
+    } else {
+        console.log('User does not exist')
+        return ''
+    }
 }
 
 
-async function getKeyWith(userId) {
-    console.log("Get key")
-    const q = query(collection(db, "users"), where("userId", "==", userId));
-    const citySnapshot = await getDocs(q);
-    if (citySnapshot.docs.length > 0) {
-        const cityList = citySnapshot.docs.map(doc => doc.id);
-        return cityList;
-    } else {
-        console.log("get key Failed")
-        return [];
+async function readMessage(userId) {
+
+    try {
+        const listMessage = await getKeyMessages(userId)
+
+        if (listMessage.length > 0) {
+
+            for (var key of listMessage) {
+                await updateDoc(doc(db, "messages", key), { Seen: true })
+                console.log("update success");
+            }
+
+        } else {
+            console.log("you don't have any new message")
+
+        }
+
+    } catch (e) {
+        console.error("Error adding document: ", e)
     }
+
 }
 
 
@@ -212,15 +234,15 @@ async function updateInfo(userId, fullname, numberPhone, idCard) {
     }
 
     try {
-        const key = await getKeyWith(userId)
-        await updateDoc(doc(db, "users", key[0]), {
+        const key = await getKeyUser(userId)
+        await updateDoc(doc(db, "users", key), {
             fullname: fullname,
             numberPhone: numberPhone,
             idCard: idCard,
         })
 
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error update document: ", e);
     }
 
 }
@@ -230,7 +252,7 @@ async function updateInfo(userId, fullname, numberPhone, idCard) {
 module.exports = {
     saveUser, getUser, saveMessage,
     updateInfo, getMessage, saveUserManager, saveUserAdmin
-    , deleteUserManager, getAllUserManager, getAllUser
+    , deleteUserManager, getAllUserManager, getAllUser, readMessage
 }
 
 
