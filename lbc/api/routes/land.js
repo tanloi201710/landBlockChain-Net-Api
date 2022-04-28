@@ -9,6 +9,9 @@ router.get('/receive', verifyTokenAndAuthorization, homeController().getReceiveL
 // Get all send transfer
 router.get('/send', verifyTokenAndAuthorization, homeController().getSendLand)
 
+// Get land
+router.get('/:key', verifyTokenAndAuthorization, homeController().getLand)
+
 // Add land for one
 router.post('/add', verifyTokenAndAuthorization, homeController().handleAddAsset)
 

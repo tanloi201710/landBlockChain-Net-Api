@@ -39,24 +39,6 @@ const homeController = () => {
 
 		},
 
-
-		// async detailReceive(req, res) {
-		// 	const { key, keyTransfer, confirmed, position } = req.body;
-		// 	console.log(`key :` + key)
-		// 	const userId = req.session.user.userId;
-		// 	try {
-		// 		const detail = await fabric.queryLand(key, userId);
-		// 		const obj = JSON.parse(detail);
-		// 		return res.render("detail", { detail: obj, confirmed: confirmed, keyTransfer: keyTransfer, position: position, requestPerson: 'receiveUser' });
-		// 	} catch (error) {
-		// 		console.log("Loi roi" + error)
-		// 		req.flash("error", "Xảy ra lỗi")
-		// 		// return res.redirect("/receiveLand")
-		// 		res.send("Loi roi")
-		// 	}
-
-
-
 		async handleAddAsset(req, res) {
 			const {
 				chuSoHuu, thuaDatSo, toBanDoSo, dienTich,
@@ -233,19 +215,6 @@ const homeController = () => {
 
 		},
 
-		// async processTransfer(req, res) {
-		// 	const { keyTransfer, confirmed, position } = req.body;
-		// 	console.log(`keytransfer ${keyTransfer}`)
-		// 	let dataString = await queryTransferOne(req.session.user.userId, keyTransfer);
-		// 	let data = JSON.parse(dataString)
-		// 	console.log(`confirmed : ${typeof confirmed}`)
-		// 	// console.log(`confirmed2 : ${position}`)
-
-		// 	// res.send("OK")
-		// 	return res.render("processTransfer", { dataProcessTransfer: data, keyTransfer: keyTransfer, position: position, confirmed: confirmed })
-
-		// },
-
 		async handleSplitLand(req, res) {
 			const { key, userRequest, areaArray } = req.body
 
@@ -277,6 +246,16 @@ const homeController = () => {
 			} catch (error) {
 				console.log('ERROR: ' + error)
 				return res.json({ error: true, message: 'Lỗi hệ thống, gửi yêu cầu tách đất không thành công!' })
+			}
+		},
+
+		async getLand(req, res) {
+			try {
+				const landString = await fabric.queryLand(req.params.key, req.user.userId)
+				const result = JSON.parse(landString)
+				res.status(200).json({ error: false, land: result })
+			} catch (error) {
+				res.json({ error: true, message: 'Lỗi hệ thống, không lấy được dữ liệu' })
 			}
 		},
 

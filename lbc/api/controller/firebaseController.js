@@ -5,13 +5,16 @@ const app = require('./firebaseConfig')
 
 const db = getFirestore(app);
 
-async function saveUser(userId, fullname, phoneNumber, idCard, password) {
-    let date_ob = new Date();
-    let monthNow = date_ob.getMonth() < 9 ? `0${date_ob.getMonth() + 1}` : `${date_ob.getMonth() + 1}`;
-    let newDate = `${date_ob.getDate()}/${monthNow}/${date_ob.getFullYear()}`;
-    let getHour = date_ob.getHours() < 9 ? `0${date_ob.getHours()}` : `${date_ob.getHours()}`;
-    let getMinute = date_ob.getMinutes() < 9 ? `0${date_ob.getMinutes()}` : `${date_ob.getMinutes()}`;
-    let time = `${getHour}:${getMinute}`;
+async function saveUser(userId, fullname, phoneNumber, idCard, password, birthDay) {
+    let date_ob = new Date()
+    let monthNow = date_ob.getMonth() < 9 ? `0${date_ob.getMonth() + 1}` : `${date_ob.getMonth() + 1}`
+    let newDate = `${date_ob.getDate()}/${monthNow}/${date_ob.getFullYear()}`
+    let getHour = date_ob.getHours() < 9 ? `0${date_ob.getHours()}` : `${date_ob.getHours()}`
+    let getMinute = date_ob.getMinutes() < 9 ? `0${date_ob.getMinutes()}` : `${date_ob.getMinutes()}`
+    let time = `${getHour}:${getMinute}`
+
+    const birthArray = birthDay.split('/')
+    const sortedBirthDay = [birthArray[1], birthArray[0], birthArray[2]]
 
     try {
         const docRef = await addDoc(collection(db, "users"), {
@@ -21,9 +24,10 @@ async function saveUser(userId, fullname, phoneNumber, idCard, password) {
             idCard,
             password,
             role: "user",
-            timestamp: serverTimestamp(),
             Date: newDate,
-            Time: time
+            Time: time,
+            birthDay: sortedBirthDay.join('/'),
+            timestamp: serverTimestamp(),
         });
         console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -247,12 +251,41 @@ async function updateInfo(userId, fullname, numberPhone, idCard) {
 
 }
 
+async function getPosts() {
+    console.log("Get posts")
+    const q = query(collection(db, "posts"))
+    const postSnapshot = await getDocs(q)
+    if (postSnapshot.docs.length > 0) {
+        const postList = postSnapshot.docs.map(doc => doc.data())
+        console.log(postList)
+        return postList
+    } else {
+        console.log("get posts Failed")
+        return []
+    }
+}
 
+async function createPost(userId, land, price, desc, img) {
+    try {
+        const docRef = await addDoc(collection(db, "posts"), {
+            userId,
+            price,
+            land,
+            desc,
+            img,
+            timestamp: serverTimestamp()
+        });
+        console.log("Post written with ID: ", docRef.id)
+    } catch (err) {
+        console.log('ERROR add post: ', err)
+    }
+}
 
 module.exports = {
     saveUser, getUser, saveMessage,
-    updateInfo, getMessage, saveUserManager, saveUserAdmin
-    , deleteUserManager, getAllUserManager, getAllUser, readMessage
+    updateInfo, getMessage, saveUserManager, saveUserAdmin,
+    deleteUserManager, getAllUserManager, getAllUser, readMessage,
+    getPosts, createPost
 }
 
 

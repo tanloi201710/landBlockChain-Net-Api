@@ -10,6 +10,9 @@ router.get('/', verifyTokenAndAuthorization, homeController().index)
 // Get split request
 router.get('/split', verifyTokenAndAuthorization, homeController().getSplitRequestOwner)
 
+// Get posts
+router.get('/posts', verifyTokenAndAuthorization, userController().handleGetPost)
+
 // Confirm transfer from receiver(one)
 router.post('/confirmReceiveOne', verifyTokenAndAuthorization, homeController().handleConfirmFromReceiver)
 
@@ -27,5 +30,8 @@ router.post('/confirmSplit', verifyTokenAndAuthorization, homeController().handl
 
 // Read the Notifications
 router.put('/readNotifications', verifyTokenAndAuthorization, userController().handleReadMessages)
+
+// Create post
+router.post('/createPost', verifyTokenAndAuthorization, userController().handleAddPost)
 
 module.exports = router

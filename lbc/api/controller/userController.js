@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { saveMessage, getUser, getAllUser, saveUser, saveUserAdmin,
     updateInfo, getAllUserManager, getMessage,
-    saveUserManager, deleteUserManager, readMessage } = require('./firebaseController');
+    saveUserManager, deleteUserManager, readMessage, createPost, getPosts } = require('./firebaseController');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -18,10 +18,10 @@ function userController() {
 
         async handleLogin(req, res) {
 
-            const { email, password } = req.body;
+            const { email, password } = req.body
             const listUser = await getUser(email);
             if (listUser.length > 0) {
-                let user = listUser[0];
+                let user = listUser[0]
                 bcrypt.compare(password, user.password, async function (err, result) {
                     if (result) {
                         const accessToken = jwt.sign(
@@ -47,7 +47,7 @@ function userController() {
         },
 
         async handleRegister(req, res) {
-            let { phoneNumber, idCard, fullName, password, email } = req.body
+            let { phoneNumber, idCard, fullName, password, email, birthDay } = req.body
 
             if (phoneNumber[0] == "0") {
                 phoneNumber = "+84" + phoneNumber.slice(1)
@@ -63,7 +63,7 @@ function userController() {
                         return res.json({ error: true, message: 'Lỗi hệ thống, đăng ký không thành công!' })
                     }
                     try {
-                        await saveUser(email, fullName, phoneNumber, idCard, hash)
+                        await saveUser(email, fullName, phoneNumber, idCard, hash, birthDay)
                         await fabric.enrollAdmin();
                         await saveMessage(email, "Chào mừng bạn đã tham gia hệ thống")
                         await fabric.register(email, mspOrg[0], organizationsCA[0], affiliations[0])
@@ -143,10 +143,10 @@ function userController() {
                     }
                     await saveUserAdmin(hash)
 
-                    await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash)
-                    await saveUser(nvb, "Phạm Hiếu Nghĩa", "+84795517167", "313456789", hash)
-                    await saveUser(nvc, "Ngô Tấn Thành", "+84796425188", "890494094", hash)
-                    await saveUser(nvd, "Phạm Ngọc Hân", "+84795678253", "908488212", hash)
+                    await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash, '10/17/2000')
+                    await saveUser(nvb, "Phạm Hiếu Nghĩa", "+84795517167", "313456789", hash, '08/14/2000')
+                    await saveUser(nvc, "Ngô Tấn Thành", "+84796425188", "890494094", hash, '10/20/2000')
+                    await saveUser(nvd, "Phạm Ngọc Hân", "+84795678253", "908488212", hash, '09/18/2000')
                 })
 
             res.status(200).json({ error: false, message: 'Init users successfully!' })
@@ -174,6 +174,28 @@ function userController() {
                 console.log('ERROR ', error)
                 res.json({ error: true, message: 'Lỗi hệ thống, đọc thông báo không thành công' })
             }
+        },
+
+        async handleGetPost(req, res) {
+            try {
+                const result = await getPosts()
+                res.status(200).json({ error: false, posts: result })
+            } catch (error) {
+                console.log('ERROR: ', error)
+                res.json({ error: true, message: 'Lỗi hệ thống, lấy dữ liệu không thành công' })
+            }
+        },
+
+        async handleAddPost(req, res) {
+            const { land, price, desc, img } = req.body
+
+            try {
+                await createPost(req.user.userId, land, price, desc, img)
+                res.status(200).json({ error: false, message: 'Đăng bài viết thành công' })
+            } catch (error) {
+                res.json({ error: true, message: 'Lỗi hệ thống, đăng bài viết không thành công' })
+            }
+
         },
 
         //statistical
@@ -477,7 +499,7 @@ function userController() {
         // wallet
 
         async walletUser(req, res) {
-            const userId = req.session.user.userId;
+            const userId = req.user.userId
             let balance = await fabric.inkvode_token_getBalance(userId)
             let acountIdToken = await fabric.inkvode_token_getAccountId(userId)
             return res.render("walletUser", { acountIdToken: acountIdToken, balance: balance })
@@ -486,9 +508,9 @@ function userController() {
         // transfer token
         async handleTransferToken(req, res) {
 
-            const { from, to, amount } = req.body;
+            const { from, to, amount } = req.body
             try {
-                await fabric.inkvode_token_transfer(req.session.user.userId, from, to, amount)
+                await fabric.inkvode_token_transfer(req.user.userId, from, to, amount)
                 req.flash("success", "Chuyển tiền thành công")
                 return res.redirect('/walletUser')
             } catch (error) {
