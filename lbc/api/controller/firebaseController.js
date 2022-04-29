@@ -88,19 +88,18 @@ async function deleteUserManager(userId) {
         throw (error)
     }
 
-
 }
 
 async function getAllUserManager() {
     console.log("Get All user Manger")
-    const q = query(collection(db, "users"), where("role", "==", "manager"));
-    const citySnapshot = await getDocs(q);
-    if (citySnapshot.docs.length > 0) {
-        const cityList = citySnapshot.docs.map(doc => doc.data());
-        console.log(cityList);
-        return cityList;
+    const q = query(collection(db, "users"), where("role", "==", "manager"))
+    const managerSnapshot = await getDocs(q)
+    if (managerSnapshot.docs.length > 0) {
+        const managerList = managerSnapshot.docs.map(doc => doc.data())
+        console.log(managerList)
+        return managerList
     } else {
-        console.log("Login Failed")
+        console.log("Can't get managers")
         return [];
     }
 }
@@ -124,16 +123,22 @@ async function getAllUser() {
 // Get a list of cities from your database
 async function getUser(userId) {
     console.log("Get user")
-    const q = query(collection(db, "users"), where("userId", "==", userId));
-    const userSnapshot = await getDocs(q);
-    if (userSnapshot.docs.length > 0) {
-        const cityList = userSnapshot.docs.map(doc => doc.data());
-        console.log(cityList);
-        return cityList;
-    } else {
-        console.log("Login Failed")
-        return [];
+    const q = query(collection(db, "users"), where("userId", "==", userId))
+    try {
+        const userSnapshot = await getDocs(q)
+        if (userSnapshot.docs.length > 0) {
+            const cityList = userSnapshot.docs.map(doc => doc.data())
+            console.log(cityList)
+            return cityList
+        } else {
+            console.log("Login Failed")
+            return []
+        }
+    } catch (error) {
+        console.log('ERROR: ', error)
+        return []
     }
+
 }
 
 async function saveMessage(userId, message) {

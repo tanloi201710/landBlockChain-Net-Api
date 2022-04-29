@@ -25,8 +25,8 @@ class Land extends Contract {
         console.info('============= START : Initialize Ledger ===========');
         const lands = [
             {
-                UserId: "phn@gmail.com",
-                Owner: "Phạm Hiếu Nghĩa",
+                UserId: "htl@gmail.com",
+                Owner: "Hồ Tấn Lợi",
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -50,8 +50,8 @@ class Land extends Contract {
 
             },
             {
-                UserId: "phn@gmail.com",
-                Owner: "Phạm Hiếu Nghĩa",
+                UserId: "anguyen@gmail.com",
+                Owner: "Nguyễn Văn A",
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -75,8 +75,8 @@ class Land extends Contract {
 
             },
             {
-                UserId: "phn@gmail.com",
-                Owner: "Phạm Hiếu Nghĩa",
+                UserId: "bnguyen@gmail.com",
+                Owner: "Nguyễn Thị B",
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -94,15 +94,15 @@ class Land extends Contract {
                 Status: "Chưa duyệt",
                 ImageUrl: "",
                 Transactions: [],
-                Address: "TP.HCM",
+                Address: "Q.8, TP.HCM",
                 NhaO: [],
                 CongTrinhKhac: []
 
             },
 
             {
-                UserId: ["phn@gmail.com", "ntt@gmail.com"],
-                Owner: ["Phạm Hiếu Nghĩa", "Ngô Tấn Thành"],
+                UserId: ["anguyen@gmail.com", "bnguyen@gmail.com"],
+                Owner: ["Nguyễn Văn A", "Nguyễn Thị B"],
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -126,8 +126,8 @@ class Land extends Contract {
 
             },
             {
-                UserId: ["phn@gmail.com", "htl@gmail.com"],
-                Owner: ["Phạm Hiếu Nghĩa", "Hồ Tấn Lợi"],
+                UserId: ["ctran@gmail.com", "htl@gmail.com"],
+                Owner: ["Trần Văn C", "Hồ Tấn Lợi"],
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -151,8 +151,8 @@ class Land extends Contract {
 
             },
             {
-                UserId: ["pnh@gmail.com", "htl@gmail.com"],
-                Owner: ["Phạm Ngọc Hân", "Hồ Tấn Lợi"],
+                UserId: ["anguyen@gmail.com", "ctran@gmail.com"],
+                Owner: ["Nguyễn Văn A", "Trần Văn C"],
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -176,8 +176,8 @@ class Land extends Contract {
 
             },
             {
-                UserId: ["pnh@gmail.com", "htl@gmail.com"],
-                Owner: ["Phạm Ngọc Hân", "Hồ Tấn Lợi"],
+                UserId: ["bnguyen@gmail.com", "htl@gmail.com"],
+                Owner: ["Nguyễn Thị B", "Hồ Tấn Lợi"],
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
@@ -211,8 +211,8 @@ class Land extends Contract {
             {
                 TimeStart: "01/03/2022",
                 TimeEnd: "-/-/-",
-                From: "phn@gmail.com",
-                To: "htl@gmail.com",
+                From: "anguyen@gmail.com",
+                To: "bnguyen@gmail.com",
                 ConfirmFromReceiver: false,
                 ConfirmFromAdmin: false,
                 Money: 0,

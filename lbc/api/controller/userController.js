@@ -109,7 +109,7 @@ function userController() {
 
         async adminDeleteManager(req, res) {
 
-            const { userId } = req.body
+            const { userId } = req.params
 
             try {
                 await deleteUserManager(userId)
@@ -124,9 +124,9 @@ function userController() {
 
         async initUsers(req, res) {
             const nva = "htl@gmail.com"
-            const nvb = "phn@gmail.com"
-            const nvc = "ntt@gmail.com"
-            const nvd = "pnh@gmail.com"
+            const nvb = "anguyen@gmail.com"
+            const nvc = "bnguyen@gmail.com"
+            const nvd = "ctran@gmail.com"
             const admin = "admin@gmail.com"
             await fabric.register(nva, mspOrg[0], organizationsCA[0], affiliations[0]),
                 await fabric.register(nvb, mspOrg[0], organizationsCA[0], affiliations[0]),
@@ -144,9 +144,9 @@ function userController() {
                     await saveUserAdmin(hash)
 
                     await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash, '10/17/2000')
-                    await saveUser(nvb, "Phạm Hiếu Nghĩa", "+84795517167", "313456789", hash, '08/14/2000')
-                    await saveUser(nvc, "Ngô Tấn Thành", "+84796425188", "890494094", hash, '10/20/2000')
-                    await saveUser(nvd, "Phạm Ngọc Hân", "+84795678253", "908488212", hash, '09/18/2000')
+                    await saveUser(nvb, "Nguyễn Văn A", "+84795517167", "313456789", hash, '08/14/2000')
+                    await saveUser(nvc, "Nguyễn Thị B", "+84796425188", "890494094", hash, '10/20/2000')
+                    await saveUser(nvd, "Trần Văn C", "+84795678253", "908488212", hash, '09/18/2000')
                 })
 
             res.status(200).json({ error: false, message: 'Init users successfully!' })
@@ -196,6 +196,15 @@ function userController() {
                 res.json({ error: true, message: 'Lỗi hệ thống, đăng bài viết không thành công' })
             }
 
+        },
+
+        async adminGetManager(req, res) {
+            try {
+                const managers = await getAllUserManager()
+                res.status(200).json({ error: false, managers })
+            } catch (error) {
+                res.json({ error: true, message: 'Lỗi hệ thống, không lấy được dữ liệu' })
+            }
         },
 
         //statistical

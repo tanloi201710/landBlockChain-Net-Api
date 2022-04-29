@@ -11,4 +11,10 @@ router.post('/addManager', userController().handleAddManager)
 // Init users
 router.get('/init', userController().initUsers)
 
+// Get managers
+router.get('/managers', verifyTokenAndAdmin, userController().adminGetManager)
+
+// Delete manager
+router.delete('/:userId', verifyTokenAndAdmin, userController().adminDeleteManager)
+
 module.exports = router

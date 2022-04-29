@@ -253,7 +253,7 @@ const homeController = () => {
 			try {
 				const landString = await fabric.queryLand(req.params.key, req.user.userId)
 				const result = JSON.parse(landString)
-				res.status(200).json({ error: false, land: result })
+				res.status(200).json({ error: false, land: { key: req.params.key, value: result } })
 			} catch (error) {
 				res.json({ error: true, message: 'Lỗi hệ thống, không lấy được dữ liệu' })
 			}
