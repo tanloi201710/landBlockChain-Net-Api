@@ -236,18 +236,16 @@ async function readMessage(userId) {
 }
 
 
-async function updateInfo(userId, fullname, numberPhone, idCard) {
+async function updateInfo(userId, newInfo) {
 
-    if (numberPhone[0] == "0") {
-        numberPhone = "+84" + numberPhone.slice(1);
+    if (newInfo.numberPhone[0] == "0") {
+        newInfo.numberPhone = "+84" + numberPhone.slice(1)
     }
 
     try {
         const key = await getKeyUser(userId)
         await updateDoc(doc(db, "users", key), {
-            fullname: fullname,
-            numberPhone: numberPhone,
-            idCard: idCard,
+            ...newInfo
         })
 
     } catch (e) {
@@ -286,11 +284,28 @@ async function createPost(userId, land, price, desc, img) {
     }
 }
 
+async function deletePost(land) {
+    try {
+        console.log("Get post")
+        const q = query(collection(db, "posts"), where("land", "==", land))
+        const postSnapshot = await getDocs(q)
+        console.log(`post delete : ${postSnapshot.docs[0]}`)
+        const postList = postSnapshot.docs.map(doc => doc.id)
+        console.log(postList)
+        await deleteDoc(doc(db, "posts", postList[0]))
+        console.log(`Deleted post have land key: ${land}`)
+    } catch (error) {
+        console.log('ERROR: ', error)
+        throw (error)
+    }
+}
+
+
 module.exports = {
     saveUser, getUser, saveMessage,
     updateInfo, getMessage, saveUserManager, saveUserAdmin,
     deleteUserManager, getAllUserManager, getAllUser, readMessage,
-    getPosts, createPost
+    getPosts, createPost, deletePost
 }
 
 

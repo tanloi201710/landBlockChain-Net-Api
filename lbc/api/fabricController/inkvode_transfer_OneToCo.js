@@ -32,7 +32,7 @@ async function main(lane, userTransfer, arrayUserReceive, time, amount) {
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: userId, discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccp, { wallet, identity: userTransfer, discovery: { enabled: true, asLocalhost: true } });
 
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('mychannel');
@@ -44,6 +44,11 @@ async function main(lane, userTransfer, arrayUserReceive, time, amount) {
 
         // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
         // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR12', 'Dave')
+        console.log('land: ', lane)
+        console.log('userTransfer', userTransfer)
+        console.log('arrayUserReceive', arrayUserReceive)
+        console.log('time', time)
+        console.log('amount', amount)
         await contract.submitTransaction('createTransferOneOwnerForCo', lane, userTransfer, arrayUserReceive, time, amount);
         // Disconnect from the gateway.
         await gateway.disconnect();

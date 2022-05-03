@@ -124,9 +124,9 @@ const homeController = () => {
 
 						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 						await saveMessage(owner, `${userId} đang chuyển một mãnh đất cho bạn`)
-						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}`)
+						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${owner}`)
 
-						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}` })
+						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${owner}` })
 
 					} else {
 						req.flash("success", `Người dùng ${userId} không sở hữu mảnh đất ${key}`)
@@ -141,11 +141,11 @@ const homeController = () => {
 						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 
 						for (let i = 0; i < land.UserId.length; i++) {
-							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}`)
+							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${owner}`)
 						}
 						await saveMessage(owner, `Bạn nhận được yêu cầu nhận đất có mã số  ${keyLand} từ người sở hữu ${land.UserId.join('-')}`)
 
-						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${owner}` })
+						return res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${owner}` })
 					} else {
 						return res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
 					}
@@ -171,20 +171,20 @@ const homeController = () => {
 			try {
 				// check Land is exist user
 				let landString = await fabric.queryLand(keyLand, userId)
-				let land = JSON.parse(landString);
+				let land = JSON.parse(landString)
 				if (typeof land.UserId != "object") {		// just one owner
 					if (land.UserId == userId) {			// and owner is this user
-						let thoigiandangky = getNow();
+						let thoigiandangky = getNow()
 
 						await fabric.inkvode_transfer_OneToCo(keyLand, userId, listOwner, thoigiandangky, amount)
 						await fabric.updateLand(userId, keyLand, "Đang chuyển")
-						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}`)
+						await saveMessage(userId, `Bạn đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${listOwner.join('-')}`)
 
 						for (let i = 0; i < listOwner.length; i++) {
 							await saveMessage(listOwner[i], `Bạn nhận được yêu cầu nhận đất do người sở hữu ${userId} chuyển cho bạn`)
 						}
 
-						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}` })
+						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${listOwner.join('-')}` })
 					} else {
 						res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
 					}
@@ -196,14 +196,14 @@ const homeController = () => {
 						await fabric.updateLand(userId, keyLand, "Đang chuyển")
 
 						for (let i = 0; i < land.UserId.length; i++) {
-							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}`)
+							await saveMessage(land.UserId[i], `${userId} đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${listOwner.join('-')}`)
 						}
 
 						for (let i = 0; i < listOwner.length; i++) {
 							await saveMessage(listOwner[i], `Bạn nhận được yêu cầu nhận đất do người sở hữu ${land.UserId.join('-')} chuyển cho bạn`)
 						}
 
-						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sở hữu đất có mã ${keyLand} cho người sở hữu ${listOwner.join('-')}` })
+						res.status(200).json({ error: false, message: `Đã gửi yêu cầu chuyển quyền sử dụng đất có mã ${keyLand} cho người dùng ${listOwner.join('-')}` })
 					} else {
 						res.json({ error: true, message: `Lỗi, bạn không sỡ hữu mãnh đất ${keyLand}` })
 					}

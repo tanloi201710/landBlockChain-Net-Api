@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { saveMessage, getUser, getAllUser, saveUser, saveUserAdmin,
     updateInfo, getAllUserManager, getMessage,
-    saveUserManager, deleteUserManager, readMessage, createPost, getPosts } = require('./firebaseController');
+    saveUserManager, deleteUserManager, readMessage, createPost, getPosts, deletePost } = require('./firebaseController');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -145,7 +145,7 @@ function userController() {
 
                     await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash, '10/17/2000')
                     await saveUser(nvb, "Nguyễn Văn A", "+84795517167", "313456789", hash, '08/14/2000')
-                    await saveUser(nvc, "Nguyễn Thị B", "+84796425188", "890494094", hash, '10/20/2000')
+                    await saveUser(nvc, "Nguyễn Thị B", "+84796425188", "890494094", hash, '11/21/2000')
                     await saveUser(nvd, "Trần Văn C", "+84795678253", "908488212", hash, '09/18/2000')
                 })
 
@@ -163,6 +163,26 @@ function userController() {
                 res.json({ error: true, message: 'Lỗi hệ thống, thêm token không thành công!' })
             }
 
+        },
+
+        async handleCheckPassword(req, res) {
+            const { password } = req.body
+            const userId = req.user.userId
+
+            const listUser = await getUser(userId)
+            if (listUser.length > 0) {
+                let user = listUser[0]
+                bcrypt.compare(password, user.password, async function (err, result) {
+                    if (result) {
+                        res.status(200).json({ error: false })
+                    }
+                    else {
+                        return res.json({ error: true, message: 'Mật khẩu không đúng' })
+                    }
+                });
+            } else {
+                return res.json({ error: true, message: 'Lỗi Server, xác nhận mật khẩu không thành công' })
+            }
         },
 
         async handleReadMessages(req, res) {
@@ -188,14 +208,43 @@ function userController() {
 
         async handleAddPost(req, res) {
             const { land, price, desc, img } = req.body
-
+            const userId = req.user.userId
             try {
-                await createPost(req.user.userId, land, price, desc, img)
+                await createPost(userId, land, price, desc, img)
+
+                let landString = await fabric.queryLand(land, userId)
+                let currentLand = JSON.parse(landString)
+
+                await fabric.updateLand(userId, land, "Đang rao bán")
+
+                if (typeof currentLand.UserId == "object") {
+                    const otherUser = currentLand.UserId.filter(user => user !== userId)
+                    for (let i = 0; i < otherUser.length; i++) {
+                        await saveMessage(otherUser[i], `Chủ sở hữu ${userId}, đã đăng bán mảnh đất có mã ${land}`)
+                    }
+                }
+                await saveMessage(userId, `Bạn đã đăng bán mảnh đất có mã ${land}`)
                 res.status(200).json({ error: false, message: 'Đăng bài viết thành công' })
             } catch (error) {
                 res.json({ error: true, message: 'Lỗi hệ thống, đăng bài viết không thành công' })
             }
 
+        },
+
+        async handleDeletePost(req, res) {
+            const { land } = req.params
+
+            console.log('Delete post have key land', land)
+
+            try {
+                await deletePost(land)
+                await fabric.updateLand(req.user.userId, land, "Đã duyệt")
+
+                await saveMessage(req.user.userId, `Bạn đã dừng đăng bán mảnh đất có mã ${land}`)
+                res.status(200).json({ error: false, message: 'Xóa bài biết thành công' })
+            } catch (error) {
+                res.json({ error: true, message: 'Lỗi hệ thống, xóa bài viết không thành công' })
+            }
         },
 
         async adminGetManager(req, res) {
@@ -490,18 +539,53 @@ function userController() {
 
         async handleSaveInfo(req, res) {
 
-            const { fullname, idCard, numberPhone } = req.body;
-            const userId = req.session.user.userId;
+            const newInfo = req.body
+            const userId = req.user.userId
 
-            try {
-                await updateInfo(userId, fullname, numberPhone, idCard);
-                req.flash('success', 'Lưu thành công');
-                return res.redirect('/info')
-            } catch (error) {
-                req.flash('error', 'Lưu không thành công');
-                return res.redirect('/info')
+            if (newInfo.password != '') {
+                bcrypt.hash(newInfo.password, saltRounds, async function (err, hash) {
+                    if (err) {
+                        return res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
+                    }
+                    try {
+                        newInfo.password = hash
+                        await updateInfo(userId, newInfo)
+
+                        return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
+                    } catch (error) {
+                        console.log("ERROR: " + error)
+
+                        return res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
+                    }
+                })
             }
 
+            try {
+                await updateInfo(userId, newInfo)
+
+                if (newInfo.userId != userId) {
+                    return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
+                }
+
+                const listUser = await getUser(userId)
+                const user = listUser[0]
+
+                const accessToken = jwt.sign(
+                    {
+                        userId: user.userId,
+                        role: user.role
+                    },
+                    process.env.JWT_SEC,
+                    { expiresIn: "3d" }
+                )
+
+                const { password, ...other } = user
+
+                res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công', user: { ...other, accessToken } })
+            } catch (error) {
+                console.log('ERROR: ', error)
+                res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
+            }
 
         },
 

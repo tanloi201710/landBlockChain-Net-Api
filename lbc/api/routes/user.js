@@ -34,4 +34,13 @@ router.put('/readNotifications', verifyTokenAndAuthorization, userController().h
 // Create post
 router.post('/createPost', verifyTokenAndAuthorization, userController().handleAddPost)
 
+// Delete post
+router.delete('/:land', verifyTokenAndAuthorization, userController().handleDeletePost)
+
+// Check password
+router.post('/checkPassword', verifyTokenAndAuthorization, userController().handleCheckPassword)
+
+// Update info
+router.post('/updateInfo', verifyTokenAndAuthorization, userController().handleSaveInfo)
+
 module.exports = router
