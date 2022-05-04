@@ -5,7 +5,7 @@ const app = require('./firebaseConfig')
 
 const db = getFirestore(app);
 
-async function saveUser(userId, fullname, phoneNumber, idCard, password, birthDay) {
+async function saveUser(userId, fullname, phoneNumber, idCard, password, birthDay, address) {
     let date_ob = new Date()
     let monthNow = date_ob.getMonth() < 9 ? `0${date_ob.getMonth() + 1}` : `${date_ob.getMonth() + 1}`
     let newDate = `${date_ob.getDate()}/${monthNow}/${date_ob.getFullYear()}`
@@ -27,6 +27,7 @@ async function saveUser(userId, fullname, phoneNumber, idCard, password, birthDa
             Date: newDate,
             Time: time,
             birthDay: sortedBirthDay.join('/'),
+            address,
             timestamp: serverTimestamp(),
         });
         console.log("Document written with ID: ", docRef.id);
@@ -201,10 +202,9 @@ async function getKeyUser(userId) {
     const q = query(collection(db, "users"), where("userId", "==", userId))
     const userSnapshot = await getDocs(q)
 
-    if (userSnapshot.length > 0) {
-        const userList = userSnapshot.docs.map(doc => doc.data())
-        console.log(userList[0].id)
-        return userList[0].id
+    if (userSnapshot.docs.length > 0) {
+        const userList = userSnapshot.docs.map(doc => doc.id)
+        return userList[0]
     } else {
         console.log('User does not exist')
         return ''
@@ -238,8 +238,11 @@ async function readMessage(userId) {
 
 async function updateInfo(userId, newInfo) {
 
-    if (newInfo.numberPhone[0] == "0") {
-        newInfo.numberPhone = "+84" + numberPhone.slice(1)
+    console.log('userId: ', userId)
+    console.log('newInfo: ', newInfo)
+
+    if (newInfo.phoneNumber[0] == "0") {
+        newInfo.phoneNumber = "+84" + phoneNumber.slice(1)
     }
 
     try {

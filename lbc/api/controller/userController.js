@@ -143,10 +143,10 @@ function userController() {
                     }
                     await saveUserAdmin(hash)
 
-                    await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash, '10/17/2000')
-                    await saveUser(nvb, "Nguyễn Văn A", "+84795517167", "313456789", hash, '08/14/2000')
-                    await saveUser(nvc, "Nguyễn Thị B", "+84796425188", "890494094", hash, '11/21/2000')
-                    await saveUser(nvd, "Trần Văn C", "+84795678253", "908488212", hash, '09/18/2000')
+                    await saveUser(nva, "Hồ Tấn Lợi", "+84334131019", "104949231", hash, '10/17/2000', '')
+                    await saveUser(nvb, "Nguyễn Văn A", "+84795517167", "313456789", hash, '08/14/2000', '')
+                    await saveUser(nvc, "Nguyễn Thị B", "+84796425188", "890494094", hash, '11/21/2000', '')
+                    await saveUser(nvd, "Trần Văn C", "+84795678253", "908488212", hash, '09/18/2000', '')
                 })
 
             res.status(200).json({ error: false, message: 'Init users successfully!' })
@@ -170,6 +170,7 @@ function userController() {
             const userId = req.user.userId
 
             const listUser = await getUser(userId)
+            console.log(listUser[0])
             if (listUser.length > 0) {
                 let user = listUser[0]
                 bcrypt.compare(password, user.password, async function (err, result) {
@@ -558,34 +559,38 @@ function userController() {
                         return res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
                     }
                 })
-            }
+            } else {
+                try {
+                    const currentUser = await getUser(userId)
+                    newInfo.password = currentUser[0].password
+                    await updateInfo(userId, newInfo)
 
-            try {
-                await updateInfo(userId, newInfo)
+                    if (newInfo.userId != userId) {
+                        return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
+                    }
 
-                if (newInfo.userId != userId) {
-                    return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
+                    const listUser = await getUser(userId)
+                    const user = listUser[0]
+
+                    const accessToken = jwt.sign(
+                        {
+                            userId: user.userId,
+                            role: user.role
+                        },
+                        process.env.JWT_SEC,
+                        { expiresIn: "3d" }
+                    )
+
+                    const { password, ...other } = user
+
+                    return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công', user: { ...other, accessToken } })
+                } catch (error) {
+                    console.log('ERROR: ', error)
+                    return res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
                 }
-
-                const listUser = await getUser(userId)
-                const user = listUser[0]
-
-                const accessToken = jwt.sign(
-                    {
-                        userId: user.userId,
-                        role: user.role
-                    },
-                    process.env.JWT_SEC,
-                    { expiresIn: "3d" }
-                )
-
-                const { password, ...other } = user
-
-                res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công', user: { ...other, accessToken } })
-            } catch (error) {
-                console.log('ERROR: ', error)
-                res.json({ error: true, message: 'Lỗi hệ thống, cập nhật thông tin không thành công' })
             }
+
+
 
         },
 
