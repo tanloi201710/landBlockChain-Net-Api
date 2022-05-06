@@ -84,7 +84,7 @@ function userController() {
         //admin
 
         async handleAddManager(req, res) {
-            const { userId, password, fullname, city } = req.body;
+            const { userId, password, fullname, city, phoneNumber } = req.body
 
             bcrypt.hash(password, saltRounds, async function (err, hash) {
                 // Store hash in your password DB.
@@ -92,7 +92,7 @@ function userController() {
                     return res.json({ error: true, message: 'Lỗi, Đăng ký quản lý không thành công!' })
                 }
                 try {
-                    await saveUserManager(userId, hash, fullname, city);
+                    await saveUserManager(userId, hash, fullname, city, phoneNumber)
                     await fabric.register(userId, mspOrg[0], organizationsCA[0], affiliations[0])
 
                     return res.status(200).json({ error: false, message: 'Đăng ký quản lý thành công' })

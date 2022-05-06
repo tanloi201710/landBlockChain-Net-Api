@@ -37,7 +37,7 @@ async function saveUser(userId, fullname, phoneNumber, idCard, password, birthDa
 
 }
 
-async function saveUserManager(userId, password, fullname, city) {
+async function saveUserManager(userId, password, fullname, city, phoneNumber) {
 
     try {
         const docRef = await addDoc(collection(db, "users"), {
@@ -45,6 +45,7 @@ async function saveUserManager(userId, password, fullname, city) {
             password,
             fullname,
             city,
+            phoneNumber,
             role: "manager",
             timestamp: serverTimestamp()
         });

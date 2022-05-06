@@ -30,7 +30,7 @@ class Land extends Contract {
                 ThuaDatSo: 931,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 529.1,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -39,7 +39,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/11/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -53,9 +53,9 @@ class Land extends Contract {
                 UserId: "anguyen@gmail.com",
                 Owner: "Nguyễn Văn A",
                 ThuaDatSo: 931,
-                ToBanDoSo: 3,
+                ToBanDoSo: 5,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 705.1,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -64,7 +64,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/11/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -77,10 +77,10 @@ class Land extends Contract {
             {
                 UserId: "bnguyen@gmail.com",
                 Owner: "Nguyễn Thị B",
-                ThuaDatSo: 931,
-                ToBanDoSo: 3,
+                ThuaDatSo: 482,
+                ToBanDoSo: 9,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 493.1,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -89,7 +89,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/11/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -103,10 +103,10 @@ class Land extends Contract {
             {
                 UserId: ["anguyen@gmail.com", "bnguyen@gmail.com"],
                 Owner: ["Nguyễn Văn A", "Nguyễn Thị B"],
-                ThuaDatSo: 931,
-                ToBanDoSo: 3,
+                ThuaDatSo: 922,
+                ToBanDoSo: 6,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 843.1,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -115,7 +115,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/09/2021",
                 Status: "Đang chuyển",
                 ImageUrl: "",
@@ -128,10 +128,10 @@ class Land extends Contract {
             {
                 UserId: ["ctran@gmail.com", "htl@gmail.com"],
                 Owner: ["Trần Văn C", "Hồ Tấn Lợi"],
-                ThuaDatSo: 931,
-                ToBanDoSo: 3,
+                ThuaDatSo: 512,
+                ToBanDoSo: 5,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 1080.12,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -140,7 +140,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/09/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -153,10 +153,10 @@ class Land extends Contract {
             {
                 UserId: ["anguyen@gmail.com", "ctran@gmail.com"],
                 Owner: ["Nguyễn Văn A", "Trần Văn C"],
-                ThuaDatSo: 931,
+                ThuaDatSo: 544,
                 ToBanDoSo: 3,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 2048,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -165,7 +165,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/09/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -178,10 +178,10 @@ class Land extends Contract {
             {
                 UserId: ["bnguyen@gmail.com", "htl@gmail.com"],
                 Owner: ["Nguyễn Thị B", "Hồ Tấn Lợi"],
-                ThuaDatSo: 931,
-                ToBanDoSo: 3,
+                ThuaDatSo: 966,
+                ToBanDoSo: 9,
                 CacSoThuaGiapRanh: '919, 905,803',
-                DienTich: 393.1,
+                DienTich: 696,
                 ToaDoCacDinh: {
                     D1: { X: 406836.70, Y: 1183891.04 }, D2: { X: 406836.75, Y: 1183891.44 },
                     D3: { X: 406836.80, Y: 1183891.37 }, D4: { X: 406836.79, Y: 1183891.40 }
@@ -190,7 +190,7 @@ class Land extends Contract {
                 HinhThucSuDung: "Sử dụng riêng",
                 MucDichSuDung: "Đất đai nông thôn",
                 ThoiHanSuDung: "Lâu dài",
-                NguonGocSuDung: "Nhà nưóc giao đất có thu tiền sử dụng",
+                NguonGocSuDung: "Nhà nước giao đất có thu tiền sử dụng",
                 ThoiGianDangKy: "09:12-11/09/2021",
                 Status: "Chưa duyệt",
                 ImageUrl: "",
@@ -207,23 +207,23 @@ class Land extends Contract {
             console.info('Added <--> ', lands[i]);
         }
 
-        const Transfers = [
-            {
-                TimeStart: "01/03/2022",
-                TimeEnd: "-/-/-",
-                From: "anguyen@gmail.com",
-                To: "bnguyen@gmail.com",
-                ConfirmFromReceiver: false,
-                ConfirmFromAdmin: false,
-                Money: 0,
-                Land: "LAND0"
-            }
-        ]
-        for (let i = 0; i < Transfers.length; i++) {
-            Transfers[i].docType = 'trans';
-            await ctx.stub.putState('TRANS' + i, Buffer.from(JSON.stringify(Transfers[i])));
-            console.info('Added <--> ', Transfers[i]);
-        }
+        // const Transfers = [
+        //     {
+        //         TimeStart: "01/03/2022",
+        //         TimeEnd: "-/-/-",
+        //         From: "anguyen@gmail.com",
+        //         To: "bnguyen@gmail.com",
+        //         ConfirmFromReceiver: false,
+        //         ConfirmFromAdmin: false,
+        //         Money: 0,
+        //         Land: "LAND0"
+        //     }
+        // ]
+        // for (let i = 0; i < Transfers.length; i++) {
+        //     Transfers[i].docType = 'trans';
+        //     await ctx.stub.putState('TRANS' + i, Buffer.from(JSON.stringify(Transfers[i])));
+        //     console.info('Added <--> ', Transfers[i]);
+        // }   
 
         const Tokens = [
             {
