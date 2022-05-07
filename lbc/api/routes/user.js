@@ -13,6 +13,9 @@ router.get('/split', verifyTokenAndAuthorization, homeController().getSplitReque
 // Get posts
 router.get('/posts', verifyTokenAndAuthorization, userController().handleGetPost)
 
+// Get wallet data
+router.get('/wallet', verifyTokenAndAuthorization, userController().walletUser)
+
 // Confirm transfer from receiver(one)
 router.post('/confirmReceiveOne', verifyTokenAndAuthorization, homeController().handleConfirmFromReceiver)
 

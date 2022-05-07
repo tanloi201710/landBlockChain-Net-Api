@@ -20,64 +20,64 @@ const totalSupplyKey = '200000';
 
 class Token extends Contract {
 
-    async createMoneyDetention(ctx,userId,transfer,amount){
+    async createMoneyDetention(ctx, userId, transfer, amount) {
         console.info('============= START : Create transfer ===========');
         console.log("tao token moi ")
         const tokens = {
-                Transfer: transfer,
-                UserId: userId,
-                MoneyDetention: amount,
-                docType: "token"
+            Transfer: transfer,
+            UserId: userId,
+            MoneyDetention: amount,
+            docType: "token"
         };
         let result = await this.checkLengthToken(ctx);
-        await ctx.stub.putState(`TOKENS${result.length+1}`, Buffer.from(JSON.stringify(tokens)));
+        await ctx.stub.putState(`TOKENS${result.length + 1}`, Buffer.from(JSON.stringify(tokens)));
         console.info('============= END : Create transfer ===========');
     }
 
-    async getMoneyDetention(ctx,userId){
+    async getMoneyDetention(ctx, userId) {
 
         let queryString = {}
-        queryString.selector = {"docType":"token","UserId":userId};
+        queryString.selector = { "docType": "token", "UserId": userId };
         let iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         let result = await this.getIteratorData(iterator);
         return result;
 
     }
 
-    async getKeyMoneyDetention(ctx,userId,key){
+    async getKeyMoneyDetention(ctx, userId, key) {
 
         let queryString = {}
-        queryString.selector = {"docType":"token","UserId":userId,"Transfer":key};
+        queryString.selector = { "docType": "token", "UserId": userId, "Transfer": key };
         let iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         let result = await this.getIteratorData(iterator);
         return result;
 
     }
 
-    async checkLengthToken(ctx){
+    async checkLengthToken(ctx) {
         let queryString = {}
-        queryString.selector = {"docType":"token"};
+        queryString.selector = { "docType": "token" };
         let iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         let result = await this.getIteratorData(iterator);
         return result;
     }
 
-    async getIteratorData(iterator){
+    async getIteratorData(iterator) {
 
         let resultArray = []
 
-        while(true){
+        while (true) {
             let res = await iterator.next()
             let resJson = {}
 
-            if(res.value && res.value.value.toString()){
+            if (res.value && res.value.value.toString()) {
                 console.log(`res value: ${res.value.value.toString('utf8')}`);
                 resJson.key = res.value.key;
                 resJson.value = JSON.parse(res.value.value.toString('utf-8'));
                 resultArray.push(resJson)
             }
-            
-            if(res.done){
+
+            if (res.done) {
                 await iterator.close()
                 return resultArray;
             }
@@ -162,7 +162,7 @@ class Token extends Contract {
      * @param {Integer} value The amount of token to be transferred
      * @returns {Boolean} Return whether the transfer was successful or not
      */
-    async Transfer(ctx,from, to, value) {
+    async Transfer(ctx, from, to, value) {
         // const from = ctx.clientIdentity.getID();
 
         const transferResp = await this._transfer(ctx, from, to, value);
@@ -362,10 +362,10 @@ class Token extends Contract {
 
         const minter = recipient;
 
-        console.log("minter : "+minter)
+        console.log("minter : " + minter)
 
         // console.log("minter2 : "+minter2)
-        
+
 
         const amountInt = parseInt(amount);
         if (amountInt <= 0) {
@@ -459,7 +459,7 @@ class Token extends Contract {
      * @param {Context} ctx the transaction context
      * @returns {Number} Returns the account balance
      */
-    async ClientAccountBalance(ctx,userId) {
+    async ClientAccountBalance(ctx, userId) {
         // Get ID of submitting client identity
         const clientAccountID = ctx.clientIdentity.getID();
 
@@ -471,21 +471,21 @@ class Token extends Contract {
             // throw new Error(`the account ${clientAccountID} does not exist`);
             return 0;
         }
-        let listMoneyDetention = await this.getMoneyDetention(ctx,userId)
+        let listMoneyDetention = await this.getMoneyDetention(ctx, userId)
         console.log(`listMoneyDetention ${listMoneyDetention}`)
         let allMoney = 0;
 
-        for(let el in listMoneyDetention){
+        for (let el in listMoneyDetention) {
             allMoney += listMoneyDetention[el].value.MoneyDetention;
         }
 
         console.log(allMoney);
-        
+
         const balance = parseInt(balanceBytes.toString()) - parseInt(allMoney);
         // const balance = parseInt(balanceBytes.toString());
 
 
-        return balance ;
+        return balance;
     }
 
     // ClientAccountID returns the id of the requesting client's account.
@@ -497,9 +497,9 @@ class Token extends Contract {
         return clientAccountID;
     }
 
-    async DeleteAsset(ctx,userId, key) {
-        console.log("KEYY:"+key)
-        let listMoneyDetention =  await this.getKeyMoneyDetention(ctx,userId,key)
+    async DeleteAsset(ctx, userId, key) {
+        console.log("KEYY:" + key)
+        let listMoneyDetention = await this.getKeyMoneyDetention(ctx, userId, key)
         console.log(`listMoneyDetention ${listMoneyDetention}`)
         return ctx.stub.deleteState(listMoneyDetention[0].key);
     }

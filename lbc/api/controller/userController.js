@@ -598,22 +598,32 @@ function userController() {
 
         async walletUser(req, res) {
             const userId = req.user.userId
-            let balance = await fabric.inkvode_token_getBalance(userId)
-            let acountIdToken = await fabric.inkvode_token_getAccountId(userId)
-            return res.render("walletUser", { acountIdToken: acountIdToken, balance: balance })
+            try {
+                let balance = await fabric.inkvode_token_getBalance(userId)
+                let accountIdToken = await fabric.inkvode_token_getAccountId(userId)
+
+                return res.status(200).json({ error: false, balance, accountIdToken })
+            } catch (error) {
+                return res.json({ error: true, message: 'Lỗi hệ thống, không lấy được dữ liệu' })
+            }
+
         },
 
         // transfer token
         async handleTransferToken(req, res) {
 
             const { from, to, amount } = req.body
+
             try {
-                await fabric.inkvode_token_transfer(req.user.userId, from, to, amount)
-                req.flash("success", "Chuyển tiền thành công")
-                return res.redirect('/walletUser')
+                let getAccountIdReceiver = await fabric.inkvode_token_getAccountId(to)
+                let getAccountIdSender = await fabric.inkvode_token_getAccountId(from)
+
+                await fabric.inkvode_token_transfer(req.user.userId, getAccountIdSender, getAccountIdReceiver, amount)
+
+                return res.status(200).json({ error: false, message: 'Chuyển tiền thành công' })
             } catch (error) {
-                req.flash("error", "Có lỗi xảy ra")
-                return res.redirect('/walletUser')
+                console.log('ERROR: ', error)
+                return res.json({ error: true, message: 'Lỗi hệ thống, chuyển tiền không thành công' })
             }
 
         }
