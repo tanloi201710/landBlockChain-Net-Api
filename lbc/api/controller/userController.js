@@ -84,7 +84,11 @@ function userController() {
         //admin
 
         async handleAddManager(req, res) {
-            const { userId, password, fullname, city, phoneNumber } = req.body
+            let { userId, password, fullname, city, phoneNumber } = req.body
+
+            if (phoneNumber[0] == "0") {
+                phoneNumber = "+84" + phoneNumber.slice(1)
+            }
 
             bcrypt.hash(password, saltRounds, async function (err, hash) {
                 // Store hash in your password DB.
@@ -565,9 +569,9 @@ function userController() {
                     newInfo.password = currentUser[0].password
                     await updateInfo(userId, newInfo)
 
-                    if (newInfo.userId != userId) {
-                        return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
-                    }
+                    // if (newInfo.userId != userId) {
+                    //     return res.status(200).json({ error: false, message: 'Cập nhật thông tin thành công, bạn cần phải đăng nhập lại' })
+                    // }
 
                     const listUser = await getUser(userId)
                     const user = listUser[0]
