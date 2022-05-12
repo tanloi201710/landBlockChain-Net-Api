@@ -162,9 +162,9 @@ function userController() {
 
             try {
                 await fabric.inkvode_token(userId, amount, recipient)
-                res.status(200).json({ error: false, message: 'Thêm token thành công!' })
+                res.status(200).json({ error: false, message: 'Nạp tiền thành công!' })
             } catch (error) {
-                res.json({ error: true, message: 'Lỗi hệ thống, thêm token không thành công!' })
+                res.json({ error: true, message: 'Lỗi hệ thống, nạp tiền không thành công!' })
             }
 
         },
@@ -619,10 +619,8 @@ function userController() {
             const { from, to, amount } = req.body
 
             try {
-                let getAccountIdReceiver = await fabric.inkvode_token_getAccountId(to)
-                let getAccountIdSender = await fabric.inkvode_token_getAccountId(from)
 
-                await fabric.inkvode_token_transfer(req.user.userId, getAccountIdSender, getAccountIdReceiver, amount)
+                await fabric.inkvode_token_transfer(req.user.userId, from, to, amount)
 
                 return res.status(200).json({ error: false, message: 'Chuyển tiền thành công' })
             } catch (error) {

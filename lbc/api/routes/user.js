@@ -46,4 +46,7 @@ router.post('/checkPassword', verifyTokenAndAuthorization, userController().hand
 // Update info
 router.post('/updateInfo', verifyTokenAndAuthorization, userController().handleSaveInfo)
 
+// Transfer token
+router.post('/transferToken', verifyTokenAndAuthorization, userController().handleTransferToken)
+
 module.exports = router

@@ -1,4 +1,5 @@
 const homeController = require('../controller/homeController')
+const userController = require('../controller/userController')
 const { verifyTokenAndManager } = require('../middlewares/verifyToken')
 
 const router = require('express').Router()
@@ -21,6 +22,9 @@ router.post('/confirmTransfer', verifyTokenAndManager, homeController().confirmT
 
 // Confirm split land
 router.post('/confirmSplit', verifyTokenAndManager, homeController().AdminConfirmSplit)
+
+// Recharge to user's wallet
+router.post('/recharge', verifyTokenAndManager, userController().handleAddToken)
 
 
 module.exports = router
