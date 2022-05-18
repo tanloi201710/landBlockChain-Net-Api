@@ -59,10 +59,10 @@ class Transfer extends Contract {
         console.info('============= END : Create transfer ===========');
     }
 
-    async createTransferCoOwnerForOne(ctx, land, userId, arrayUserTransferList, userReceive1, time, amount) {
+    async createTransferCoOwnerForOne(ctx, land, userId, arrayUserTransfer, userReceive1, time, amount) {
         console.info('============= START : Create transfer ===========')
 
-        let arrayF = arrayUserTransferList.split(',')
+        let arrayF = arrayUserTransfer.split(',')
 
         let arrayTransfer2 = []
         for (let i = 0; i < arrayF.length; i++) {
