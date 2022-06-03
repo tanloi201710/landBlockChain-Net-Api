@@ -17,4 +17,10 @@ router.get('/managers', verifyTokenAndAdmin, userController().adminGetManager)
 // Delete manager
 router.delete('/:userId', verifyTokenAndAdmin, userController().adminDeleteManager)
 
+// Get all transfer
+router.get('/allTransfer', verifyTokenAndAdmin, homeController().getTransferAdmin)
+
+// Get all Split Request
+router.get('/allSplit', verifyTokenAndAdmin, homeController().getSplitRequestAdmin)
+
 module.exports = router

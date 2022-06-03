@@ -23,7 +23,7 @@ const homeController = () => {
 
 					allLands = [...menu, ...menuCo]
 
-				} else if (req.user.role === "manager") {
+				} else if (req.user.role === "manager" || req.user.role === "admin") {
 					const menuString = await fabric.queryAllLands(req.user.userId, req.user.role)
 					const menu = JSON.parse(menuString)
 					allLands = menu
